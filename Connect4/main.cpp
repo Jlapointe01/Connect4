@@ -1,5 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <list>   //Changer pour list.hpp
+#include <vector> //changer pour vector.hpp
 
 
 //Postion coin en bas a gauche : 67 ,940
@@ -8,14 +10,22 @@
 
 using namespace sf;
 using namespace std;
+
+void left(CircleShape &triangle);
+void right(CircleShape &triangle);
+
 int main()
 {
 	RenderWindow window(sf::VideoMode(1278, 1106), "Connect4");
 	CircleShape shape(50.f);
 	CircleShape triangle(35,3);
-
 	Texture map;
 	
+	list<int>::iterator it;
+	vector<list<int>> _grille(7, list<int>());
+
+	it = _grille[0].begin();
+
 
 	if (!map.loadFromFile("Connect4_map.png"))
 		cout << "Erreur";
@@ -47,12 +57,26 @@ int main()
 		switch (event.key.code){
 		case Keyboard::Right:
 			//fonction droite
+			break;
 				//triangle.setPosition(Vector2f(300, 60));
 		case Keyboard::Left:
 			//fonction gauche
-
+			break;
+		case Keyboard::Return:
+			//fonction placer jeton		
+			break;
 		}
 
 	}
 	return 0;
+}
+
+void left(CircleShape &triangle) {
+
+
+}
+
+
+void right(CircleShape &triangle) {
+
 }
