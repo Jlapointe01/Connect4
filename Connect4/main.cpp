@@ -12,10 +12,13 @@ using namespace sf;
 using namespace std;
 
 void left(CircleShape &triangle);
-void right(CircleShape &triangle);
+void right(CircleShape &triangle, int &x, int y);
 
 int main()
 {
+	int posTriangleX = 150;
+	int posTriangleY = 60; 
+
 	RenderWindow window(sf::VideoMode(1278, 1106), "Connect4");
 	CircleShape shape(50.f);
 	CircleShape triangle(35,3);
@@ -36,7 +39,7 @@ int main()
 	shape.setPosition(Vector2f(241, 765));
 
 	triangle.setFillColor(Color::Red);
-	triangle.setPosition(Vector2f(150, 60));
+	triangle.setPosition(Vector2f(posTriangleX, posTriangleY));
 	triangle.rotate(180);
 	// 1278 pixels x 1106 pixels
 
@@ -56,9 +59,9 @@ int main()
 
 		switch (event.key.code){
 		case Keyboard::Right:
-			//fonction droite
+			right(triangle, posTriangleX, posTriangleY);
+			posTriangleX += 175;
 			break;
-				//triangle.setPosition(Vector2f(300, 60));
 		case Keyboard::Left:
 			//fonction gauche
 			break;
@@ -73,10 +76,9 @@ int main()
 
 void left(CircleShape &triangle) {
 
-
 }
 
 
-void right(CircleShape &triangle) {
-
+void right(CircleShape &triangle, int &x, int y) {
+	triangle.setPosition(Vector2f(x + 175, y));
 }
