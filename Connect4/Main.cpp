@@ -23,5 +23,5 @@ void main()
 		// fin de la frame courante, affichage de tout ce qu'on a dessiné
 		window.display();
 	}
-	system("pause");
+
 }
