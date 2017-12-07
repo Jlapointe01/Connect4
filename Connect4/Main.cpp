@@ -11,15 +11,15 @@
 using namespace sf;
 using namespace std;
 
-void left(CircleShape &triangle);
+void left(CircleShape &triangle, int &x, int y);
 void right(CircleShape &triangle, int &x, int y);
-
+void positionMouse(CircleShape &triangle, int &x, int y);
 int main()
 {
 	int posTriangleX = 150;
 	int posTriangleY = 60;
 
-	RenderWindow window(sf::VideoMode(1278, 1106), "Connect4");
+	RenderWindow window(sf::VideoMode(1278, 1106), "Connect 4");
 	CircleShape shape(50.f);
 	CircleShape triangle(35, 3);
 	Texture map;
@@ -50,6 +50,43 @@ int main()
 		while (window.pollEvent(event)) {
 			if (event.type == sf::Event::Closed)
 				window.close();
+			if (event.type == sf::Event::KeyPressed)
+			{
+				switch (event.key.code)
+				{
+				case Keyboard::Right:
+					if (posTriangleX == 1200)
+					{
+						right(triangle, posTriangleX, posTriangleY);
+						posTriangleX = 150;
+					}
+					else
+					{
+						right(triangle, posTriangleX, posTriangleY);
+						posTriangleX += 175;
+					}
+					break;
+				case Keyboard::Left:
+					if (posTriangleX == 150)
+					{
+						left(triangle, posTriangleX, posTriangleY);
+						posTriangleX = 1200;
+					}
+					else
+					{
+						left(triangle, posTriangleX, posTriangleY);
+						posTriangleX -= 175;
+					}
+					break;
+				case Keyboard::Return:
+					//fonction placer jeton		
+					break;
+				}
+			}
+			if (event.type == sf::Event::MouseMoved)
+			{
+				positionMouse(triangle, event.mouseMove.x, posTriangleY);//puisqu'on veut que le triangle reste en haut
+			}
 		}
 		window.clear();
 		window.draw(_map);
@@ -57,28 +94,38 @@ int main()
 		window.draw(triangle);
 		window.display();
 
-		switch (event.key.code) {
-		case Keyboard::Right:
-			right(triangle, posTriangleX, posTriangleY);
-			posTriangleX += 175;
-			break;
-		case Keyboard::Left:
-			//fonction gauche
-			break;
-		case Keyboard::Return:
-			//fonction placer jeton		
-			break;
-		}
+	
 
 	}
 	return 0;
 }
 
-void left(CircleShape &triangle) {
-
+void left(CircleShape &triangle, int &x, int y)
+{
+	if (x == 150)
+	{
+		x = 1200;
+		triangle.setPosition(Vector2f(x, y));
+	}
+	else
+	{
+		triangle.setPosition(Vector2f(x - 175, y));
+	}
 }
 
 
 void right(CircleShape &triangle, int &x, int y) {
-	triangle.setPosition(Vector2f(x + 175, y));
+	if (x == 1200)
+	{
+		x = 150;
+		triangle.setPosition(Vector2f(x, y));
+	}
+	else
+	{
+		triangle.setPosition(Vector2f(x + 175, y));
+	}
+}
+void positionMouse(CircleShape &triangle, int &x, int y)
+{
+	triangle.setPosition(Vector2f(x, y));
 }
