@@ -1,3 +1,4 @@
+#include <SFML/Graphics.hpp>
 #include <iostream>
 #include <list>   //Changer pour list.hpp
 #include <vector> //changer pour vector.hpp
