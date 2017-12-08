@@ -11,7 +11,7 @@
 using namespace sf;
 using namespace std;
 
-void left(CircleShape &triangle);
+void left(CircleShape &triangle, int &x, int y);
 void right(CircleShape &triangle, int &x, int y);
 
 int main()
@@ -57,13 +57,31 @@ int main()
 		window.draw(triangle);
 		window.display();
 
-		switch (event.key.code){
+		switch (event.key.code)
+		{
 		case Keyboard::Right:
-			right(triangle, posTriangleX, posTriangleY);
-			posTriangleX += 175;
+			if (posTriangleX == 1200)
+			{
+				right(triangle, posTriangleX, posTriangleY);
+				posTriangleX = 150;
+			}
+			else
+			{
+				right(triangle, posTriangleX, posTriangleY);
+				posTriangleX += 175;
+			}
 			break;
 		case Keyboard::Left:
-			//fonction gauche
+			if (posTriangleX == 150)
+			{
+				left(triangle, posTriangleX, posTriangleY);
+				posTriangleX = 1200;
+			}
+			else
+			{
+				left(triangle, posTriangleX, posTriangleY);
+				posTriangleX -= 175;
+			}
 			break;
 		case Keyboard::Return:
 			//fonction placer jeton		
