@@ -74,11 +74,32 @@ int main()
 	return 0;
 }
 
-void left(CircleShape &triangle) {
-
+void left(CircleShape &triangle, int &x, int y)
+{
+	if (x == 150)
+	{
+		x = 1200;
+		triangle.setPosition(Vector2f(x, y));
+	}
+	else
+	{
+		triangle.setPosition(Vector2f(x - 175, y));
+	}
 }
 
 
 void right(CircleShape &triangle, int &x, int y) {
-	triangle.setPosition(Vector2f(x + 175, y));
+	if (x == 1200)
+	{
+		x = 150;
+		triangle.setPosition(Vector2f(x, y));
+	}
+	else
+	{
+		triangle.setPosition(Vector2f(x + 175, y));
+	}
+}
+void positionMouse(CircleShape &triangle, int &x, int y)
+{
+	triangle.setPosition(Vector2f(x, y));
 }
