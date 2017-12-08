@@ -8,27 +8,40 @@
 //Difference haut et bas : 175 px 
 //Difference gauche et droite : 174 px
 
+struct point {
+	int x;
+	int y;
+	point(int x1, int y1) {
+		x = x1;
+		y = y1;
+	}
+};
+
+
 using namespace sf;
 using namespace std;
 
-void left(CircleShape &triangle, int &x, int y);
-void right(CircleShape &triangle, int &x, int y);
+void left(CircleShape &triangle, point &posTriangle);
+void right(CircleShape &triangle, point &posTriangle);
 void positionMouse(CircleShape &triangle, int &x, int y);
+void insererJeton(vector<list<int>> &grille, list<int>::iterator& it);
+
 int main()
 {
-	int posTriangleX = 150;
-	int posTriangleY = 60;
 
+	point posTriangle(150, 60);
 	RenderWindow window(sf::VideoMode(1278, 1106), "Connect 4");
 	CircleShape shape(50.f);
 	CircleShape triangle(35, 3);
 	Texture map;
 
-	list<int>::iterator it;
+	list<int>::iterator it[7];
 	vector<list<int>> _grille(7, list<int>());
 
-	it = _grille[0].begin();
-
+	//Initialisation des pointeurs
+	for (int i = 0; i < 7; i++) {
+		it[i] = _grille[i].begin();
+	}
 
 	if (!map.loadFromFile("Connect4_map.png"))
 		cout << "Erreur";
@@ -39,7 +52,7 @@ int main()
 	shape.setPosition(Vector2f(241, 765));
 
 	triangle.setFillColor(Color::Red);
-	triangle.setPosition(Vector2f(posTriangleX, posTriangleY));
+	triangle.setPosition(Vector2f(posTriangle.x, posTriangle.y));
 	triangle.rotate(180);
 	// 1278 pixels x 1106 pixels
 
@@ -55,27 +68,27 @@ int main()
 				switch (event.key.code)
 				{
 				case Keyboard::Right:
-					if (posTriangleX == 1200)
+					if (posTriangle.x == 1200)
 					{
-						right(triangle, posTriangleX, posTriangleY);
-						posTriangleX = 150;
+						right(triangle, posTriangle);
+						posTriangle.x = 150;
 					}
 					else
 					{
-						right(triangle, posTriangleX, posTriangleY);
-						posTriangleX += 175;
+						right(triangle, posTriangle);
+						posTriangle.x += 175;
 					}
 					break;
 				case Keyboard::Left:
-					if (posTriangleX == 150)
+					if (posTriangle.x == 150)
 					{
-						left(triangle, posTriangleX, posTriangleY);
-						posTriangleX = 1200;
+						left(triangle, posTriangle);
+						posTriangle.x = 1200;
 					}
 					else
 					{
-						left(triangle, posTriangleX, posTriangleY);
-						posTriangleX -= 175;
+						left(triangle, posTriangle);
+						posTriangle.x -= 175;
 					}
 					break;
 				case Keyboard::Return:
@@ -83,49 +96,56 @@ int main()
 					break;
 				}
 			}
-			if (event.type == sf::Event::MouseMoved)
-			{
-				positionMouse(triangle, event.mouseMove.x, posTriangleY);//puisqu'on veut que le triangle reste en haut
-			}
+			//if (event.type == sf::Event::MouseMoved)
+			//{
+			//	positionMouse(triangle, event.mouseMove.x, posTriangleY);//puisqu'on veut que le triangle reste en haut
+			//}
 		}
+
+
 		window.clear();
 		window.draw(_map);
 		window.draw(shape);
 		window.draw(triangle);
 		window.display();
-
-
-
 	}
 	return 0;
 }
 
-void left(CircleShape &triangle, int &x, int y)
+void left(CircleShape &triangle, point &posTriangle)
 {
-	if (x == 150)
+	if (posTriangle.x == 150)
 	{
-		x = 1200;
-		triangle.setPosition(Vector2f(x, y));
+		posTriangle.x = 1200;
+		triangle.setPosition(Vector2f(posTriangle.x, posTriangle.y));
 	}
 	else
 	{
-		triangle.setPosition(Vector2f(x - 175, y));
+		triangle.setPosition(Vector2f(posTriangle.x - 175, posTriangle.y));
 	}
 }
 
 
-void right(CircleShape &triangle, int &x, int y) {
-	if (x == 1200)
+void right(CircleShape &triangle, point &posTriangle) {
+	if (posTriangle.x == 1200)
 	{
-		x = 150;
-		triangle.setPosition(Vector2f(x, y));
+		posTriangle.x = 150;
+		triangle.setPosition(Vector2f(posTriangle.x, posTriangle.y));
 	}
 	else
 	{
-		triangle.setPosition(Vector2f(x + 175, y));
+		triangle.setPosition(Vector2f(posTriangle.x + 175, posTriangle.y));
 	}
 }
+
 void positionMouse(CircleShape &triangle, int &x, int y)
 {
 	triangle.setPosition(Vector2f(x, y));
+}
+
+void insererJeton(vector<list<int>> &grille, list<int>::iterator& it) 
+{
+
+
+
 }
