@@ -3,10 +3,12 @@
 #include <list>   //Changer pour list.hpp
 #include <vector> //changer pour vector.hpp
 
-
-//Postion coin en bas a gauche : 67 ,940
+// grosseur map : 1278 pixels x 1106 pixels
+//Postion coin en bas a gauche : 67 , 940
 //Difference haut et bas : 175 px 
-//Difference gauche et droite : 174 px
+//Difference gauche et droite : 175 px
+
+//position triangle 1 : 150 325 500 675 850 1025 1200
 
 struct point {
 	int x;
@@ -21,17 +23,24 @@ struct point {
 using namespace sf;
 using namespace std;
 
+void initialiser(vector<list<int>> &grille, list<int>::iterator& it);
+bool siVide(list<int>::iterator& it);
+
 void left(CircleShape &triangle, point &posTriangle);
 void right(CircleShape &triangle, point &posTriangle);
 void positionMouse(CircleShape &triangle, int &x, int y);
-void insererJeton(vector<list<int>> &grille, list<int>::iterator& it);
+void insererJeton(vector<list<int>> &grille, list<int>::iterator& it, point triangle);
 
 int main()
 {
-
 	point posTriangle(150, 60);
+	point posShape1();
+	point posShape2();
+
+
 	RenderWindow window(sf::VideoMode(1278, 1106), "Connect 4");
-	CircleShape shape(50.f);
+	CircleShape shape1(50.f);
+	CircleShape shape2(50.f);
 	CircleShape triangle(35, 3);
 	Texture map;
 
@@ -47,14 +56,17 @@ int main()
 		cout << "Erreur";
 
 	Sprite _map(map);
-	shape.setFillColor(sf::Color::Red);
+	shape1.setFillColor(sf::Color::Red);
+	shape2.setFillColor(sf::Color::Yellow);
 
-	shape.setPosition(Vector2f(241, 765));
+	shape2.setPosition(Vector2f(1112, 940));
+	//shape1.setPosition(Vector2f(241, 765));
 
 	triangle.setFillColor(Color::Red);
 	triangle.setPosition(Vector2f(posTriangle.x, posTriangle.y));
 	triangle.rotate(180);
-	// 1278 pixels x 1106 pixels
+
+
 
 	while (window.isOpen()) {
 		Event event;
@@ -92,6 +104,7 @@ int main()
 					}
 					break;
 				case Keyboard::Return:
+					
 					//fonction placer jeton		
 					break;
 				}
@@ -101,11 +114,9 @@ int main()
 			//	positionMouse(triangle, event.mouseMove.x, posTriangleY);//puisqu'on veut que le triangle reste en haut
 			//}
 		}
-
-
 		window.clear();
 		window.draw(_map);
-		window.draw(shape);
+		window.draw(shape2);
 		window.draw(triangle);
 		window.display();
 	}
@@ -143,9 +154,20 @@ void positionMouse(CircleShape &triangle, int &x, int y)
 	triangle.setPosition(Vector2f(x, y));
 }
 
-void insererJeton(vector<list<int>> &grille, list<int>::iterator& it) 
+bool siVide(list<int>::iterator& it) {
+
+	if (*it != 0)
+		return false;
+	return true;
+}
+void insererJeton(vector<list<int>> &grille, list<int>::iterator& it, point triangle, int joueur) 
 {
-
-
+	//position triangle 1 : 150 325 500 675 850 1025 1200
+	while (*it != joueur) {
+		if (!siVide(it))
+			*it = joueur;
+		else
+			it--;
+	}
 
 }
