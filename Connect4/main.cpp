@@ -13,17 +13,17 @@ using namespace std;
 
 void left(CircleShape &triangle, int &x, int y);
 void right(CircleShape &triangle, int &x, int y);
-
+void positionMouse(CircleShape &triangle, int &x, int y);
 int main()
 {
 	int posTriangleX = 150;
-	int posTriangleY = 60; 
+	int posTriangleY = 60;
 
-	RenderWindow window(sf::VideoMode(1278, 1106), "Connect4");
+	RenderWindow window(sf::VideoMode(1278, 1106), "Connect 4");
 	CircleShape shape(50.f);
-	CircleShape triangle(35,3);
+	CircleShape triangle(35, 3);
 	Texture map;
-	
+
 	list<int>::iterator it;
 	vector<list<int>> _grille(7, list<int>());
 
@@ -43,13 +43,50 @@ int main()
 	triangle.rotate(180);
 	// 1278 pixels x 1106 pixels
 
-	while (window.isOpen()){
+	while (window.isOpen()) {
 		Event event;
 		Event keyPressed;
 
-		while (window.pollEvent(event)){
+		while (window.pollEvent(event)) {
 			if (event.type == sf::Event::Closed)
 				window.close();
+			if (event.type == sf::Event::KeyPressed)
+			{
+				switch (event.key.code)
+				{
+				case Keyboard::Right:
+					if (posTriangleX == 1200)
+					{
+						right(triangle, posTriangleX, posTriangleY);
+						posTriangleX = 150;
+					}
+					else
+					{
+						right(triangle, posTriangleX, posTriangleY);
+						posTriangleX += 175;
+					}
+					break;
+				case Keyboard::Left:
+					if (posTriangleX == 150)
+					{
+						left(triangle, posTriangleX, posTriangleY);
+						posTriangleX = 1200;
+					}
+					else
+					{
+						left(triangle, posTriangleX, posTriangleY);
+						posTriangleX -= 175;
+					}
+					break;
+				case Keyboard::Return:
+					//fonction placer jeton		
+					break;
+				}
+			}
+			if (event.type == sf::Event::MouseMoved)
+			{
+				positionMouse(triangle, event.mouseMove.x, posTriangleY);//puisqu'on veut que le triangle reste en haut
+			}
 		}
 		window.clear();
 		window.draw(_map);
@@ -57,36 +94,7 @@ int main()
 		window.draw(triangle);
 		window.display();
 
-		switch (event.key.code)
-		{
-		case Keyboard::Right:
-			if (posTriangleX == 1200)
-			{
-				right(triangle, posTriangleX, posTriangleY);
-				posTriangleX = 150;
-			}
-			else
-			{
-				right(triangle, posTriangleX, posTriangleY);
-				posTriangleX += 175;
-			}
-			break;
-		case Keyboard::Left:
-			if (posTriangleX == 150)
-			{
-				left(triangle, posTriangleX, posTriangleY);
-				posTriangleX = 1200;
-			}
-			else
-			{
-				left(triangle, posTriangleX, posTriangleY);
-				posTriangleX -= 175;
-			}
-			break;
-		case Keyboard::Return:
-			//fonction placer jeton		
-			break;
-		}
+
 
 	}
 	return 0;
