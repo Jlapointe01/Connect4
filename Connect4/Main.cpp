@@ -15,6 +15,7 @@ using namespace std;
 void left(CircleShape &triangle, int &x, int y);
 void right(CircleShape &triangle, int &x, int y);
 void positionMouse(CircleShape &triangle, int &x, int y);
+void changementTour(CircleShape &triangle);
 int main()
 {
 	int posTriangleX = 150;
@@ -88,6 +89,11 @@ int main()
 			{
 				positionMouse(triangle, event.mouseMove.x, posTriangleY);//puisqu'on veut que le triangle reste en haut
 			}
+			if (event.type == sf::Event::MouseButtonReleased)
+			{
+				//mettre jeton
+				changementTour(triangle);
+			}
 		}
 		window.clear();
 		window.draw(_map);
@@ -159,4 +165,15 @@ void positionMouse(CircleShape &triangle, int &x, int y)
 		x = 1200;
 	}
 	triangle.setPosition(Vector2f(x, y));
+}
+void changementTour(CircleShape &triangle)
+{
+	if (triangle.getFillColor() == sf::Color::Red)
+	{
+		triangle.setFillColor(sf::Color::Yellow);
+	}
+	else
+	{
+		triangle.setFillColor(sf::Color::Red);
+	}
 }
