@@ -7,7 +7,8 @@
 //Postion coin en bas a gauche : 67 ,940
 //Difference haut et bas : 175 px 
 //Difference gauche et droite : 174 px
-
+//Début 1ère colonne : 63 px
+//Fin 1ère colonne : 237 px
 using namespace sf;
 using namespace std;
 
@@ -125,7 +126,37 @@ void right(CircleShape &triangle, int &x, int y) {
 		triangle.setPosition(Vector2f(x + 175, y));
 	}
 }
+//Début 1ère colonne : 63 px
+//Fin 1ère colonne : 237 px
 void positionMouse(CircleShape &triangle, int &x, int y)
 {
+	if (x >= 0 && x <= 237)
+	{
+		x = 150;
+	}
+	else if (x >= 238 && x <= 412)
+	{
+		x = 325;
+	}
+	else if (x >= 413 && x <= 587)
+	{
+		x = 500;
+	}
+	else if (x >= 588 && x <= 762)
+	{
+		x = 675;
+	}
+	else if (x>=763 && x <= 937)
+	{
+		x = 850;
+	}
+	else if ( x>=938 && x<=1112)
+	{
+		x = 1025;
+	}
+	else if (x >= 1113 && x <= 1278)
+	{
+		x = 1200;
+	}
 	triangle.setPosition(Vector2f(x, y));
 }
