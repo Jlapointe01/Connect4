@@ -23,20 +23,21 @@ struct point {
 using namespace sf;
 using namespace std;
 
-void initialiser(vector<list<int>> &grille, list<int>::iterator& it);
+void initialiser(vector<list<int>> &grille);
 bool siVide(list<int>::iterator& it);
 
 void left(CircleShape &triangle, point &posTriangle);
 void right(CircleShape &triangle, point &posTriangle);
 void positionMouse(CircleShape &triangle, int &x, int y);
-void insererJeton(vector<list<int>> &grille, list<int>::iterator& it, point triangle);
+void insererJeton(list<int> &grille, int jeton);
 
 int main()
 {
 	point posTriangle(150, 60);
 	point posShape1();
 	point posShape2();
-
+	const int rouge = 1,
+			  jaune = 2;
 
 	RenderWindow window(sf::VideoMode(1278, 1106), "Connect 4");
 	CircleShape shape1(50.f);
@@ -44,13 +45,10 @@ int main()
 	CircleShape triangle(35, 3);
 	Texture map;
 
-	list<int>::iterator it[7];
-	vector<list<int>> _grille(7, list<int>());
+	vector<list<int>> grille(7);
+	list<int>::iterator it;
 
-	//Initialisation des pointeurs
-	for (int i = 0; i < 7; i++) {
-		it[i] = _grille[i].begin();
-	}
+	initialiser(grille);
 
 	if (!map.loadFromFile("Connect4_map.png"))
 		cout << "Erreur";
@@ -103,9 +101,8 @@ int main()
 						posTriangle.x -= 175;
 					}
 					break;
-				case Keyboard::Return:
-					
-					//fonction placer jeton		
+				case Keyboard::Return:				
+					insererJeton(grille[0], jaune);
 					break;
 				}
 			}
@@ -121,6 +118,17 @@ int main()
 		window.display();
 	}
 	return 0;
+}
+
+void initialiser(vector<list<int>> &grille) {
+	//Initialise la grille
+	for (int i = 0; i < 6; i++) {
+		for (int k = 0; k < 7; k++) {
+			grille[k].push_back(0);
+		}
+	}
+
+
 }
 
 void left(CircleShape &triangle, point &posTriangle)
@@ -154,20 +162,22 @@ void positionMouse(CircleShape &triangle, int &x, int y)
 	triangle.setPosition(Vector2f(x, y));
 }
 
-bool siVide(list<int>::iterator& it) {
+bool siVide(list<int>::iterator& it) 
+{
 
 	if (*it != 0)
 		return false;
 	return true;
 }
-void insererJeton(vector<list<int>> &grille, list<int>::iterator& it, point triangle, int joueur) 
+void insererJeton(list<int> &grille, int jeton)
 {
-	//position triangle 1 : 150 325 500 675 850 1025 1200
-	while (*it != joueur) {
-		if (!siVide(it))
-			*it = joueur;
-		else
-			it--;
-	}
+	list<int>::iterator it = grille.begin(); ;
+	do
+	{
 
+		if (*it == 0)
+			*it = jeton;
+		else
+			it++;
+	} while (*it != 0);
 }
