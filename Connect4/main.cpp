@@ -30,6 +30,8 @@ void left(CircleShape &triangle, point &posTriangle);
 void right(CircleShape &triangle, point &posTriangle);
 void positionMouse(CircleShape &triangle, int &x, int y);
 void insererJeton(list<int> &grille, int jeton);
+bool verifierSiGagner(list<int> &grille, int jeton);
+
 
 int main()
 {
@@ -45,8 +47,9 @@ int main()
 	CircleShape triangle(35, 3);
 	Texture map;
 
+	int tour = 0;
+
 	vector<list<int>> grille(7);
-	list<int>::iterator it;
 
 	initialiser(grille);
 
