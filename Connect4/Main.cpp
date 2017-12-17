@@ -22,11 +22,11 @@ struct point {
 const int nbX = 7;
 const int nbY = 6;
 void nomJoueurs(string &Rouge, string &Jaune);//Problème pas de console c'est une fenêtre
-void left(CircleShape &triangle, int &x, int y);
-void right(CircleShape &triangle, int &x, int y);
+void left(CircleShape &triangle, point &posTriangle);
+void right(CircleShape &triangle, point &posTriangle);
 void positionMouse(CircleShape &triangle, int &x, int y, int &colonne);
 void changementTour(CircleShape &triangle, int &tour);
-void initialiserGrille(vector<list<int>> &grille);
+void initialiser(vector<list<int>> &grille);
 bool insererJeton(vector<list<int>> &grille, int couleurJeton, int colonne);
 bool rechercheGagnant(vector<list<int>> grille, point jeton, int couleurJeton);
 bool rechercheVertical(vector<list<int>> grille, point jeton, int couleurJeton);
@@ -41,7 +41,7 @@ int main()
 	point posShape2();
 	const int rouge = 1,
 		jaune = 2;
-
+	int colonne = 0;
 	RenderWindow window(sf::VideoMode(1278, 1106), "Connect 4");
 	CircleShape shape1(50.f);
 	CircleShape shape2(50.f);
@@ -112,11 +112,11 @@ int main()
 			}
 			if (event.type == sf::Event::MouseMoved)
 			{
-				positionMouse(triangle, event.mouseMove.x, posTriangleY, colonne);//puisqu'on veut que le triangle reste en haut
+				positionMouse(triangle, event.mouseMove.x, posTriangle.y, colonne);//puisqu'on veut que le triangle reste en haut
 			}
 			if (event.type == sf::Event::MouseButtonReleased)
 			{
-				insererJeton(_grille, tour, colonne);
+				insererJeton(grille, tour, colonne);
 				changementTour(triangle, tour);
 			}
 		}
@@ -138,7 +138,7 @@ void nomJoueurs(string &Rouge, string &Jaune)
 	cout << "Indiquer le nom du joueur Jaune : " << endl;
 	cin >> Jaune;
 }
-void initialiserGrille(vector<list<int>> &grille)
+void initialiser(vector<list<int>> &grille)
 {
 	for (int i = 0; i < nbX; i++)
 	{
@@ -149,29 +149,29 @@ void initialiserGrille(vector<list<int>> &grille)
 	}
 }
 
-void left(CircleShape &triangle, int &x, int y)
+void left(CircleShape &triangle, point &posTriangle)
 {
-	if (x == 150)
+	if (posTriangle.x == 150)
 	{
-		x = 1200;
-		triangle.setPosition(Vector2f(x, y));
+		posTriangle.x = 1200;
+		triangle.setPosition(Vector2f(posTriangle.x, posTriangle.y));
 	}
 	else
 	{
-		triangle.setPosition(Vector2f(x - 175, y));
+		triangle.setPosition(Vector2f(posTriangle.x - 175, posTriangle.y));
 	}
 }
 
 
-void right(CircleShape &triangle, int &x, int y) {
-	if (x == 1200)
+void right(CircleShape &triangle, point &posTriangle) {
+	if (posTriangle.x == 1200)
 	{
-		x = 150;
-		triangle.setPosition(Vector2f(x, y));
+		posTriangle.x = 150;
+		triangle.setPosition(Vector2f(posTriangle.x, posTriangle.y));
 	}
 	else
 	{
-		triangle.setPosition(Vector2f(x + 175, y));
+		triangle.setPosition(Vector2f(posTriangle.x + 175, posTriangle.y));
 	}
 }
 //Début 1ère colonne : 63 px
