@@ -212,10 +212,10 @@ bool jetonDessous(vector<list<int>> &grille, int colonne, int tour)
 {
 	for (int i = 0; i < nbY; i++)
 	{
-		if(grille[colonne].element() > 0)	//element a changer selon le nom de la fonction dans notre liste
-		{
-			return true;
-		}
+		//if(grille[colonne].element() > 0)	//element a changer selon le nom de la fonction dans notre liste
+		//{
+		//	return true;
+		//}
 	}
 	return false;
 }
