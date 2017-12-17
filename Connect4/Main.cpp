@@ -110,7 +110,7 @@ int main()
 			}
 			if (event.type == sf::Event::MouseButtonReleased)
 			{
-				//mettre jeton
+				
 				changementTour(triangle, tour);
 			}
 		}
