@@ -337,7 +337,7 @@ bool rechercheDiagonal_NW_SE(vector<list<int>> grille, point jeton, int couleurJ
 			return true;
 	}
 
-	while (x1 != 6 && y1 != 0) //regarde NW
+	while (x1 != 0 && y1 != 6) //regarde NW
 	{
 		x1--;
 		y1++;
