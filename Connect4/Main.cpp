@@ -19,7 +19,6 @@ void right(CircleShape &triangle, int &x, int y);
 void positionMouse(CircleShape &triangle, int &x, int y, int &colonne);
 void changementTour(CircleShape &triangle, int &tour);
 void initialiserGrille(vector<list<int>> &grille);
-bool jetonDessous(vector<list<int>> &grille, int colonne, int tour);
 int main()
 {
 	
@@ -208,14 +207,190 @@ void changementTour(CircleShape &triangle, int &tour)
 		tour = 1;
 	}
 }
-bool jetonDessous(vector<list<int>> &grille, int colonne, int tour)
+bool siVide(list<int>::iterator& it)
 {
-	for (int i = 0; i < nbY; i++)
+	if (*it != 0)
+		return false;
+	return true;
+}
+bool insererJeton(vector<list<int>> &grille, int couleurJeton, int colonne)
+{
+	list<int>::iterator it = grille[colonne].begin();
+
+	point posJeton(colonne, 0);
+
+
+	do
 	{
-		//if(grille[colonne].element() > 0)	//element a changer selon le nom de la fonction dans notre liste
-		//{
-		//	return true;
-		//}
+		if (*it == 0) {
+			*it = couleurJeton;
+			rechercheGagnant(grille, posJeton, couleurJeton);
+		}
+		else {
+			it++;
+			posJeton.y += 1;
+			if (it == grille[colonne].end())
+				return false;
+		}
+	} while (*it != 0);
+	return true;
+}
+
+bool rechercheGagnant(vector<list<int>> grille, point jeton, int couleurJeton) {
+	if (rechercheHorizontal(grille, jeton, couleurJeton) == true || rechercheVertical(grille, jeton, couleurJeton) == true
+		|| rechercheDiagonal_NE_SW(grille, jeton, couleurJeton) == true || rechercheDiagonal_NW_SE(grille, jeton, couleurJeton) == true)
+		return true;
+	return false;
+}
+
+bool rechercheVertical(vector<list<int>> grille, point jeton, int couleurJeton) {
+
+	list<int>::iterator it = grille[jeton.x].begin();
+
+	for (int i = 0; i < jeton.y; i++)
+		it++;
+
+	for (int i = 0; i < 3; i++) {
+		it--;
+		if (*it != couleurJeton)
+			return false;
+	}
+	return true;
+}
+
+bool rechercheHorizontal(vector<list<int>> grille, point jeton, int couleurJeton) {
+
+	int x1 = jeton.x;
+	int x2 = jeton.x;
+	int nb = 1; //condition pour gagner
+
+	while (x1 != 0) //regarde a gauche
+	{
+		x1--;
+
+		//positionne l'iterateur
+		list<int>::iterator it = grille[x1].begin();
+		for (int i = 0; i < jeton.y; i++)
+			it++;
+
+		if (*it != couleurJeton)
+			break;
+		nb++;
+		if (nb == 4)
+			return true;
+	}
+
+	while (x2 != 6)//regarde a droite
+	{
+		x2++;
+
+		//positionne l'iterateur
+		list<int>::iterator it = grille[x2].begin();
+		for (int i = 0; i < jeton.y; i++)
+			it++;
+
+		//verifie s'il a la bonne couleur
+		if (*it != couleurJeton)
+			break;
+		nb++;
+
+		if (nb == 4)
+			return true;
+	}
+
+	return false;
+}
+
+bool rechercheDiagonal_NE_SW(vector<list<int>> grille, point jeton, int couleurJeton) {
+
+	int x1 = jeton.x;
+	int y1 = jeton.y;
+	int x2 = jeton.x;
+	int y2 = jeton.y;
+	int nb = 1; //condition pour gagner
+
+	while (x1 != 0 && y1 != 0) //regarde SW
+	{
+		x1--;
+		y1--;
+
+		list<int>::iterator it = grille[x1].begin();
+		for (int i = 0; i < y1; i++)
+			it++;
+
+		if (*it != couleurJeton)
+			break;
+
+		nb++;
+
+		if (nb == 4)
+			return true;
+	}
+
+	while (x1 != 6 && y1 != 6) // regarde NE
+	{
+		x2++;
+		y2++;
+
+		list<int>::iterator it = grille[x2].begin();
+		for (int i = 0; i < y2; i++)
+			it++;
+
+		if (*it != couleurJeton)
+			break;
+
+		nb++;
+
+		if (nb == 4)
+			return true;
+	}
+	return false;
+
+}
+
+bool rechercheDiagonal_NW_SE(vector<list<int>> grille, point jeton, int couleurJeton) {
+
+	int x1 = jeton.x;
+	int y1 = jeton.y;
+	int x2 = jeton.x;
+	int y2 = jeton.y;
+	int nb = 1; //condition pour gagner
+
+
+	while (x1 != 6 && y1 != 0) //regarde SE
+	{
+		x1++;
+		y1--;
+
+		list<int>::iterator it = grille[x1].begin();
+		for (int i = 0; i < y1; i++)
+			it++;
+
+		if (*it != couleurJeton)
+			break;
+
+		nb++;
+
+		if (nb == 4)
+			return true;
+	}
+
+	while (x1 != 0 && y1 != 6) //regarde NW
+	{
+		x1--;
+		y1++;
+
+		list<int>::iterator it = grille[x1].begin();
+		for (int i = 0; i < y1; i++)
+			it++;
+
+		if (*it != couleurJeton)
+			break;
+
+		nb++;
+
+		if (nb == 4)
+			return true;
 	}
 	return false;
 }
