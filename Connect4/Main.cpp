@@ -11,6 +11,14 @@
 //Fin 1ère colonne : 237 px
 using namespace sf;
 using namespace std;
+struct point {
+	int x;
+	int y;
+	point(int x1, int y1) {
+		x = x1;
+		y = y1;
+	}
+};
 const int nbX = 7;
 const int nbY = 6;
 void nomJoueurs(string &Rouge, string &Jaune);//Problème pas de console c'est une fenêtre
