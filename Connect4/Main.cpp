@@ -36,37 +36,43 @@ bool rechercheDiagonal_NW_SE(vector<list<int>> grille, point jeton, int couleurJ
 
 int main()
 {
-	
-	int posTriangleX = 150;
-	int posTriangleY = 60;
-	int tour = 1;
-	int colonne = 0;
+	point posTriangle(150, 60);
+	point posShape1();
+	point posShape2();
+	const int rouge = 1,
+		jaune = 2;
+
 	RenderWindow window(sf::VideoMode(1278, 1106), "Connect 4");
-	CircleShape shape(50.f);
+	CircleShape shape1(50.f);
+	CircleShape shape2(50.f);
 	CircleShape triangle(35, 3);
 	Texture map;
 
-	list<int>::iterator it;
-	vector<list<int>> _grille(nbX, list<int>());
-	initialiserGrille(_grille);
-	it = _grille[0].begin();
+	int tour = 0;
 
+	vector<list<int>> grille(7);
+
+	initialiser(grille);
 
 	if (!map.loadFromFile("Connect4_map.png"))
 		cout << "Erreur";
 
 	Sprite _map(map);
-	shape.setFillColor(sf::Color::Red);
+	shape1.setFillColor(sf::Color::Red);
+	shape2.setFillColor(sf::Color::Yellow);
 
-	shape.setPosition(Vector2f(241, 765));
+	shape2.setPosition(Vector2f(1112, 940));
+	//shape1.setPosition(Vector2f(241, 765));
 
 	triangle.setFillColor(Color::Red);
-	triangle.setPosition(Vector2f(posTriangleX, posTriangleY));
+	triangle.setPosition(Vector2f(posTriangle.x, posTriangle.y));
 	triangle.rotate(180);
-	
-	// 1278 pixels x 1106 pixels
+
+
+
 	while (window.isOpen()) {
 		Event event;
+		Event keyPressed;
 
 		while (window.pollEvent(event)) {
 			if (event.type == sf::Event::Closed)
@@ -76,27 +82,27 @@ int main()
 				switch (event.key.code)
 				{
 				case Keyboard::Right:
-					if (posTriangleX == 1200)
+					if (posTriangle.x == 1200)
 					{
-						right(triangle, posTriangleX, posTriangleY);
-						posTriangleX = 150;
+						right(triangle, posTriangle);
+						posTriangle.x = 150;
 					}
 					else
 					{
-						right(triangle, posTriangleX, posTriangleY);
-						posTriangleX += 175;
+						right(triangle, posTriangle);
+						posTriangle.x += 175;
 					}
 					break;
 				case Keyboard::Left:
-					if (posTriangleX == 150)
+					if (posTriangle.x == 150)
 					{
-						left(triangle, posTriangleX, posTriangleY);
-						posTriangleX = 1200;
+						left(triangle, posTriangle);
+						posTriangle.x = 1200;
 					}
 					else
 					{
-						left(triangle, posTriangleX, posTriangleY);
-						posTriangleX -= 175;
+						left(triangle, posTriangle);
+						posTriangle.x -= 175;
 					}
 					break;
 				case Keyboard::Return:
