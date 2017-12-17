@@ -122,7 +122,8 @@ int main()
 		}
 		window.clear();
 		window.draw(_map);
-		window.draw(shape);
+		window.draw(shape1);
+		window.draw(shape2);
 		window.draw(triangle);
 		window.display();
 
