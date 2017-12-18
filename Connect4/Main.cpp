@@ -34,52 +34,24 @@ bool rechercheVertical(vector<list<int>> grille, point jeton, int couleurJeton);
 bool rechercheHorizontal(vector<list<int>> grille, point jeton, int couleurJeton);
 bool rechercheDiagonal_NE_SW(vector<list<int>> grille, point jeton, int couleurJeton);
 bool rechercheDiagonal_NW_SE(vector<list<int>> grille, point jeton, int couleurJeton);
-
-int main()
+int main
 {
-	cout << "test" << endl;
-	BaseDonnees bd;
-	bd.connexion();
-	bd.deconnexion();
-	point posTriangle(150, 60);
-	point posShape1();
-	point posShape2();
-	const int rouge = 1,
-		jaune = 2;
-	int colonne = 0;
-	RenderWindow window(sf::VideoMode(1278, 1106), "Connect 4");
-	CircleShape shape1(50.f);
-	CircleShape shape2(50.f);
-	CircleShape triangle(35, 3);
-	Texture map;
+while (window.isOpen())
+{
+	Event event;
+	Event keyPressed;
 
-	int tour = 0;
-
-	vector<list<int>> grille(7);
-
-	initialiser(grille);
-
-	if (!map.loadFromFile("Connect4_map.png"))
-		cout << "Erreur";
-
-	Sprite _map(map);
-	shape1.setFillColor(sf::Color::Red);
-	shape2.setFillColor(sf::Color::Yellow);
-
-	shape2.setPosition(Vector2f(1112, 940));
-	//shape1.setPosition(Vector2f(241, 765));
-
-	triangle.setFillColor(Color::Red);
-	triangle.setPosition(Vector2f(posTriangle.x, posTriangle.y));
-	triangle.rotate(180);
+	while (terminer == false)
+	{
+		if (joueurCourant == rouge)
+			triangle.setFillColor(Color::Red);
+		else
+			triangle.setFillColor(Color::Yellow);
 
 
 
-	while (window.isOpen()) {
-		Event event;
-		Event keyPressed;
-
-		while (window.pollEvent(event)) {
+		while (window.pollEvent(event))
+		{
 			if (event.type == sf::Event::Closed)
 				window.close();
 			if (event.type == sf::Event::KeyPressed)
@@ -91,11 +63,13 @@ int main()
 					{
 						right(triangle, posTriangle);
 						posTriangle.x = 150;
+						col = 0;
 					}
 					else
 					{
 						right(triangle, posTriangle);
 						posTriangle.x += 175;
+						col++;
 					}
 					break;
 				case Keyboard::Left:
@@ -103,41 +77,28 @@ int main()
 					{
 						left(triangle, posTriangle);
 						posTriangle.x = 1200;
+						col = 6;
 					}
 					else
 					{
 						left(triangle, posTriangle);
 						posTriangle.x -= 175;
+						col--;
 					}
 					break;
 				case Keyboard::Return:
-					//fonction placer jeton		
+					insererJeton(grille, joueurCourant, col);
+					if (joueurCourant == rouge)
+						joueurCourant = jaune;
+					else
+						joueurCourant = rouge;
+
+
+
+
 					break;
 				}
 			}
-			if (event.type == sf::Event::MouseMoved)
-			{
-				positionMouse(triangle, event.mouseMove.x, posTriangle.y, colonne);//puisqu'on veut que le triangle reste en haut
-			}
-			if (event.type == sf::Event::MouseButtonReleased)
-			{
-				insererJeton(grille, tour, colonne);
-				changementTour(triangle, tour);
-			}
-		}
-		window.clear();
-		window.draw(_map);
-		window.draw(shape1);
-		window.draw(shape2);
-		window.draw(triangle);
-		window.display();
-
-	
-
-	}
-	
-	return 0;
-
 }
 void nomJoueurs(string &Rouge, string &Jaune)
 {
