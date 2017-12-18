@@ -141,7 +141,7 @@ int main()
 
 void initialiser(vector<list<int>> &grille) {
 	//Initialise la grille
-	for (int i = 0; i < 6; i++) {
+	for (int i = 0; i < 7; i++) {
 		for (int k = 0; k < 7; k++) {
 			grille[i].push_back(0);
 		}
@@ -305,7 +305,7 @@ bool rechercheDiagonal_NE_SW(vector<list<int>> &grille, point jeton, int couleur
 			return true;
 	}
 
-	while (x1 != 6 && y1 != 6) // regarde NE
+	while (x2 != 6 && y2 != 6) // regarde NE
 	{
 		x2++;
 		y2++;
@@ -353,13 +353,13 @@ bool rechercheDiagonal_NW_SE(vector<list<int>> &grille, point jeton, int couleur
 			return true;
 	}
 
-	while (x1 != 0 && y1 != 6) //regarde NW
+	while (x2 != 0 && y2 != 6) //regarde NW
 	{
-		x1--;
-		y1++;
+		x2--;
+		y2++;
 
-		list<int>::iterator it = grille[x1].begin();
-		for (int i = 0; i < y1; i++)
+		list<int>::iterator it = grille[x2].begin();
+		for (int i = 0; i < y2; i++)
 			it++;
 
 		if (*it != couleurJeton)
@@ -376,14 +376,14 @@ bool rechercheDiagonal_NW_SE(vector<list<int>> &grille, point jeton, int couleur
 void dessiner(vector<list<int>> &grille, RenderWindow &window, Sprite map, CircleShape triangle) {
 
 
-	CircleShape jetons[6][7];
+	CircleShape jetons[7][7];
 	int posX = 67;
 	int posY = 940;
 
 	window.draw(map);
 	window.draw(triangle);
 
-	for (int i = 0; i < 6; i++) {
+	for (int i = 0; i < 7; i++) {
 		sf::Color couleur;
 		list<int>::iterator it = grille[i].begin();
 			for (int k = 0; k < 7; k++)
