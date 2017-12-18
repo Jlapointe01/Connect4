@@ -1,44 +1,20 @@
-#include <iostream>
-#include <string>
-
-#include <windows.h>
-#include <sqlext.h>
-#include <sqltypes.h>
-#include <sql.h>
+#include "BaseDonnees.h"
 
 using namespace std;
 
-#define SQL_RESULT_LEN 240
-#define SQL_RETURN_CODE_LEN 1000
-
-//Variable SQL
-SQLHANDLE sqlConnHandle;
-SQLHANDLE sqlStmtHandle;
-SQLHANDLE sqlEnvHandle;
-SQLWCHAR retconstring[SQL_RETURN_CODE_LEN];
-
-void connexion();
-void deconnexion();
-void selectUsager();
-void ajouteUsager(char *nom, char *prenom);
-
-
-//int main() {
+//selectUsager();
 //
-//	selectUsager();
+//char nom[] = { "Dufour1" };
+//char prenom[] = { "Simon" };
 //
-//	char nom[] = { "Dufour1" };
-//	char prenom[] = { "Simon" };
+//ajouteUsager(nom, prenom);
+////suppUsager();
 //
-//	ajouteUsager(nom, prenom);
-//	//suppUsager();
-//
-//	//Pause avant de fermer le programme
-//	cout << "\nPress any key to exit...";
-//	getchar();
-//}
-
-void connexion() {
+////Pause avant de fermer le programme
+//cout << "\nPress any key to exit...";
+//getchar();
+void BaseDonnees::connexion()
+{
 	//Initialisations
 	sqlConnHandle = NULL;
 	sqlStmtHandle = NULL;
@@ -54,7 +30,7 @@ void connexion() {
 
 			//Connexion au SQL Server
 			switch (SQLDriverConnect(sqlConnHandle, NULL,
-				(SQLWCHAR*)L"DRIVER={SQL Server};SERVER=localhost, 1433;DATABASE=demo;UID=sa;PWD=user123;", SQL_NTS, retconstring, 1024, NULL, SQL_DRIVER_NOPROMPT)) {
+				(SQLWCHAR*)L"DRIVER={SQL Server};SERVER=localhost, 1433;DATABASE=Connect4;UID=Connect4;PWD=abc123;", SQL_NTS, retconstring, 1024, NULL, SQL_DRIVER_NOPROMPT)) {
 
 			case SQL_SUCCESS:
 				cout << "Connexion reussi";
@@ -94,7 +70,7 @@ void connexion() {
 
 }
 
-void deconnexion() {
+void BaseDonnees::deconnexion() {
 
 	cout << "Deconnexion ..." << "\n";
 
@@ -104,7 +80,7 @@ void deconnexion() {
 	SQLFreeHandle(SQL_HANDLE_ENV, sqlEnvHandle);
 }
 
-void selectUsager() {
+void BaseDonnees::selectUsager() {
 
 	try
 	{
@@ -143,7 +119,7 @@ void selectUsager() {
 
 
 
-void ajouteUsager(char *nom, char *prenom) {
+void BaseDonnees::ajouteUsager(char *nom, char *prenom) {
 
 	try
 	{

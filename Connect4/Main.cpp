@@ -2,6 +2,7 @@
 #include <iostream>
 #include <list>   //Changer pour list.hpp
 #include <vector> //changer pour vector.hpp
+#include "BaseDonnees.h"
 
 //Pour liste 0 = vide, 1 = rouge, 2 = jaune
 //Postion coin en bas a gauche : 67 ,940
