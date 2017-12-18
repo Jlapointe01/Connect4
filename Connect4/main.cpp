@@ -237,7 +237,7 @@ bool rechercheVertical(vector<list<int>> grille, point jeton, int couleurJeton) 
 	for (int i = 0; i < jeton.y; i++)
 		it++;
 
-	if (jeton.x > 3) {
+	if (jeton.y > 3) {
 		for (int i = 0; i < 3; i++) {
 			it--;
 			if (*it != couleurJeton)
