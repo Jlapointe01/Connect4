@@ -23,20 +23,20 @@ void selectUsager();
 void ajouteUsager(char *nom, char *prenom);
 
 
-int main() {
-
-	selectUsager();
-
-	char nom[] = { "Dufour1" };
-	char prenom[] = { "Simon" };
-
-	ajouteUsager(nom, prenom);
-	//suppUsager();
-
-	//Pause avant de fermer le programme
-	cout << "\nPress any key to exit...";
-	getchar();
-}
+//int main() {
+//
+//	selectUsager();
+//
+//	char nom[] = { "Dufour1" };
+//	char prenom[] = { "Simon" };
+//
+//	ajouteUsager(nom, prenom);
+//	//suppUsager();
+//
+//	//Pause avant de fermer le programme
+//	cout << "\nPress any key to exit...";
+//	getchar();
+//}
 
 void connexion() {
 	//Initialisations
@@ -118,10 +118,10 @@ void selectUsager() {
 			//Déclarer les variables d'affichage
 
 			SQLCHAR nom[SQL_RESULT_LEN];
-			SQLINTEGER ptrnom;
+			SQLLEN ptrnom;
 
 			SQLCHAR prenom[SQL_RESULT_LEN];
-			SQLINTEGER ptrprenom;
+			SQLLEN ptrprenom;
 
 			while (SQLFetch(sqlStmtHandle) == SQL_SUCCESS) {
 				SQLGetData(sqlStmtHandle, 1, SQL_CHAR, prenom, SQL_RESULT_LEN, &ptrprenom);
