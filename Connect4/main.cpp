@@ -30,31 +30,28 @@ void left(CircleShape &triangle, point &posTriangle);
 void right(CircleShape &triangle, point &posTriangle);
 void positionMouse(CircleShape &triangle, int &x, int y);
 bool insererJeton(vector<list<int>> &grille, int couleurJeton, int colonne);
-bool rechercheGagnant(vector<list<int>> grille, point jeton, int couleurJeton);
-bool rechercheVertical(vector<list<int>> grille, point jeton, int couleurJeton);
-bool rechercheHorizontal(vector<list<int>> grille, point jeton, int couleurJeton);
-bool rechercheDiagonal_NE_SW(vector<list<int>> grille, point jeton, int couleurJeton);
-bool rechercheDiagonal_NW_SE(vector<list<int>> grille, point jeton, int couleurJeton);
+bool rechercheGagnant(vector<list<int>> &grille, point jeton, int couleurJeton);
+bool rechercheVertical(vector<list<int>> &grille, point jeton, int couleurJeton);
+bool rechercheHorizontal(vector<list<int>> &grille, point jeton, int couleurJeton);
+bool rechercheDiagonal_NE_SW(vector<list<int>> &grille, point jeton, int couleurJeton);
+bool rechercheDiagonal_NW_SE(vector<list<int>> &grille, point jeton, int couleurJeton);
+void dessiner(vector<list<int>> &grille, RenderWindow &window, Sprite map, CircleShape triangle);
 
 int main()
 {
 	point posTriangle(150, 60);
-	point posShape1();
-	point posShape2();
 	const int rouge = 1,
 			  jaune = 2;
 	int joueurCourant = rouge;
-
+	CircleShape jetons[6][7];
 
 	RenderWindow window(sf::VideoMode(1278, 1106), "Connect 4");
-	CircleShape shape1(50.f);
-	CircleShape shape2(50.f);
 	CircleShape triangle(35, 3);
 	Texture map;
 	bool terminer = false;
 	int col = 0;
 	int tour = 0;
-
+	bool gagner = false;
 	vector<list<int>> grille(7);
 
 	initialiser(grille);
@@ -63,13 +60,6 @@ int main()
 		cout << "Erreur";
 
 	Sprite _map(map);
-	shape1.setFillColor(sf::Color::Red);
-	shape2.setFillColor(sf::Color::Yellow);
-
-	shape2.setPosition(Vector2f(1112, 940));
-	shape1.setPosition(Vector2f(241, 765));
-
-
 	triangle.setPosition(Vector2f(posTriangle.x, posTriangle.y));
 	triangle.rotate(180);
 
@@ -124,15 +114,13 @@ int main()
 						}
 						break;
 					case Keyboard::Return:
-						insererJeton(grille, joueurCourant, col);
+						gagner = insererJeton(grille, joueurCourant, col);
+
+											
 						if (joueurCourant == rouge)
 							joueurCourant = jaune;
 						else
 							joueurCourant = rouge;
-
-
-
-
 						break;
 					}
 				}
@@ -141,11 +129,8 @@ int main()
 				//	positionMouse(triangle, event.mouseMove.x, posTriangleY);//puisqu'on veut que le triangle reste en haut
 				//}
 			}
-			window.clear();
-			window.draw(_map);
-			window.draw(shape2);
-			window.draw(triangle);
-			window.display();			
+	    	window.clear();
+			dessiner(grille, window, _map, triangle);
 		}
 		
 
@@ -158,7 +143,7 @@ void initialiser(vector<list<int>> &grille) {
 	//Initialise la grille
 	for (int i = 0; i < 6; i++) {
 		for (int k = 0; k < 7; k++) {
-			grille[k].push_back(0);
+			grille[i].push_back(0);
 		}
 	}
 }
@@ -203,7 +188,8 @@ bool siVide(list<int>::iterator& it)
 bool insererJeton(vector<list<int>> &grille, int couleurJeton, int colonne)
 {
 	list<int>::iterator it = grille[colonne].begin();
-
+	bool jetonPlacer = false;
+	bool gagner = false;
 	point posJeton(colonne, 0);
 
 
@@ -211,7 +197,8 @@ bool insererJeton(vector<list<int>> &grille, int couleurJeton, int colonne)
 	{
 		if (*it == 0) {
 			*it = couleurJeton;
-			rechercheGagnant(grille, posJeton, couleurJeton);
+			jetonPlacer = true;
+			 gagner = rechercheGagnant(grille, posJeton, couleurJeton);
 		}
 		else {
 			it++;
@@ -219,18 +206,19 @@ bool insererJeton(vector<list<int>> &grille, int couleurJeton, int colonne)
 			if (it == grille[colonne].end())
 				return false;
 		}
-	} while (*it != 0);
-	return true;
+	} while (jetonPlacer == false);
+
+	return gagner;
 }
 
-bool rechercheGagnant(vector<list<int>> grille, point jeton, int couleurJeton) {
+bool rechercheGagnant(vector<list<int>> &grille, point jeton, int couleurJeton) {
 	if (rechercheHorizontal(grille, jeton, couleurJeton) == true || rechercheVertical(grille, jeton, couleurJeton) == true 
 		|| rechercheDiagonal_NE_SW(grille, jeton, couleurJeton) == true || rechercheDiagonal_NW_SE(grille, jeton, couleurJeton) == true)
 		return true;
 	return false;
 }
 
-bool rechercheVertical(vector<list<int>> grille, point jeton, int couleurJeton) {
+bool rechercheVertical(vector<list<int>> &grille, point jeton, int couleurJeton) {
 
 	list<int>::iterator it = grille[jeton.x].begin();
 
@@ -248,7 +236,7 @@ bool rechercheVertical(vector<list<int>> grille, point jeton, int couleurJeton) 
 	return false;
 }
 
-bool rechercheHorizontal(vector<list<int>> grille, point jeton, int couleurJeton) {
+bool rechercheHorizontal(vector<list<int>> &grille, point jeton, int couleurJeton) {
 
 	int x1 = jeton.x;
 	int x2 = jeton.x;
@@ -291,7 +279,7 @@ bool rechercheHorizontal(vector<list<int>> grille, point jeton, int couleurJeton
 	return false;
 }
 
-bool rechercheDiagonal_NE_SW(vector<list<int>> grille, point jeton, int couleurJeton) {
+bool rechercheDiagonal_NE_SW(vector<list<int>> &grille, point jeton, int couleurJeton) {
 
 	int x1 = jeton.x;
 	int y1 = jeton.y;
@@ -338,7 +326,7 @@ bool rechercheDiagonal_NE_SW(vector<list<int>> grille, point jeton, int couleurJ
 
 }
 
-bool rechercheDiagonal_NW_SE(vector<list<int>> grille, point jeton, int couleurJeton) {
+bool rechercheDiagonal_NW_SE(vector<list<int>> &grille, point jeton, int couleurJeton) {
 
 	int x1 = jeton.x;
 	int y1 = jeton.y;
@@ -383,4 +371,41 @@ bool rechercheDiagonal_NW_SE(vector<list<int>> grille, point jeton, int couleurJ
 			return true;
 	}
 	return false;
+}
+
+void dessiner(vector<list<int>> &grille, RenderWindow &window, Sprite map, CircleShape triangle) {
+
+
+	CircleShape jetons[6][7];
+	int posX = 67;
+	int posY = 940;
+
+	window.draw(map);
+	window.draw(triangle);
+
+	for (int i = 0; i < 6; i++) {
+		sf::Color couleur;
+		list<int>::iterator it = grille[i].begin();
+			for (int k = 0; k < 7; k++)
+			{
+				if (*it == 0)
+					couleur = Color::Transparent;
+				else if (*it == 1)
+					couleur = Color::Red;
+				else
+					couleur = Color::Yellow;
+				it++;
+
+				jetons[i][k].setRadius(50.f);
+				jetons[i][k].setFillColor(couleur);
+				jetons[i][k].setPosition(Vector2f(posX, posY));
+
+				window.draw(jetons[i][k]);
+				posY -= 175;
+
+			}
+			posY = 940;
+			posX += 175;
+	}
+	window.display();
 }
