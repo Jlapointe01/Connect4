@@ -36,9 +36,6 @@ bool rechercheHorizontal(vector<list<int>> grille, point jeton, int couleurJeton
 bool rechercheDiagonal_NE_SW(vector<list<int>> grille, point jeton, int couleurJeton);
 bool rechercheDiagonal_NW_SE(vector<list<int>> grille, point jeton, int couleurJeton);
 
-
-int getPosition(list<int> &grille);
-
 int main()
 {
 	point posTriangle(150, 60);
@@ -46,13 +43,16 @@ int main()
 	point posShape2();
 	const int rouge = 1,
 			  jaune = 2;
+	int joueurCourant = rouge;
+
 
 	RenderWindow window(sf::VideoMode(1278, 1106), "Connect 4");
 	CircleShape shape1(50.f);
 	CircleShape shape2(50.f);
 	CircleShape triangle(35, 3);
 	Texture map;
-
+	bool terminer = false;
+	int col = 0;
 	int tour = 0;
 
 	vector<list<int>> grille(7);
@@ -67,64 +67,89 @@ int main()
 	shape2.setFillColor(sf::Color::Yellow);
 
 	shape2.setPosition(Vector2f(1112, 940));
-	//shape1.setPosition(Vector2f(241, 765));
+	shape1.setPosition(Vector2f(241, 765));
 
-	triangle.setFillColor(Color::Red);
+
 	triangle.setPosition(Vector2f(posTriangle.x, posTriangle.y));
 	triangle.rotate(180);
 
-
-
-	while (window.isOpen()) {
+	while (window.isOpen()) 
+	{
 		Event event;
 		Event keyPressed;
 
-		while (window.pollEvent(event)) {
-			if (event.type == sf::Event::Closed)
-				window.close();
-			if (event.type == sf::Event::KeyPressed)
+		while (terminer == false)
+		{
+			if (joueurCourant == rouge)
+				triangle.setFillColor(Color::Red);
+			else
+				triangle.setFillColor(Color::Yellow);
+
+
+
+			while (window.pollEvent(event))
 			{
-				switch (event.key.code)
+				if (event.type == sf::Event::Closed)
+					window.close();
+				if (event.type == sf::Event::KeyPressed)
 				{
-				case Keyboard::Right:
-					if (posTriangle.x == 1200)
+					switch (event.key.code)
 					{
-						right(triangle, posTriangle);
-						posTriangle.x = 150;
+					case Keyboard::Right:
+						if (posTriangle.x == 1200)
+						{
+							right(triangle, posTriangle);
+							posTriangle.x = 150;
+							col = 0;
+						}
+						else
+						{
+							right(triangle, posTriangle);
+							posTriangle.x += 175;
+							col++;
+						}
+						break;
+					case Keyboard::Left:
+						if (posTriangle.x == 150)
+						{
+							left(triangle, posTriangle);
+							posTriangle.x = 1200;
+							col = 6;
+						}
+						else
+						{
+							left(triangle, posTriangle);
+							posTriangle.x -= 175;
+							col--;
+						}
+						break;
+					case Keyboard::Return:
+						insererJeton(grille, joueurCourant, col);
+						if (joueurCourant == rouge)
+							joueurCourant = jaune;
+						else
+							joueurCourant = rouge;
+
+
+
+
+						break;
 					}
-					else
-					{
-						right(triangle, posTriangle);
-						posTriangle.x += 175;
-					}
-					break;
-				case Keyboard::Left:
-					if (posTriangle.x == 150)
-					{
-						left(triangle, posTriangle);
-						posTriangle.x = 1200;
-					}
-					else
-					{
-						left(triangle, posTriangle);
-						posTriangle.x -= 175;
-					}
-					break;
-				case Keyboard::Return:
-					
-					break;
 				}
+				//if (event.type == sf::Event::MouseMoved)
+				//{
+				//	positionMouse(triangle, event.mouseMove.x, posTriangleY);//puisqu'on veut que le triangle reste en haut
+				//}
 			}
-			//if (event.type == sf::Event::MouseMoved)
-			//{
-			//	positionMouse(triangle, event.mouseMove.x, posTriangleY);//puisqu'on veut que le triangle reste en haut
-			//}
+			window.clear();
+			window.draw(_map);
+			window.draw(shape2);
+			window.draw(triangle);
+			window.display();			
 		}
-		window.clear();
-		window.draw(_map);
-		window.draw(shape2);
-		window.draw(triangle);
-		window.display();
+		
+
+
 	}
 	return 0;
 }
@@ -212,12 +237,15 @@ bool rechercheVertical(vector<list<int>> grille, point jeton, int couleurJeton) 
 	for (int i = 0; i < jeton.y; i++)
 		it++;
 
-	for (int i = 0; i < 3; i++) {
-		it--;
-		if (*it != couleurJeton)
-			return false;
-	}
+	if (jeton.x > 3) {
+		for (int i = 0; i < 3; i++) {
+			it--;
+			if (*it != couleurJeton)
+				return false;
+		}
 			return true;
+	}
+	return false;
 }
 
 bool rechercheHorizontal(vector<list<int>> grille, point jeton, int couleurJeton) {
