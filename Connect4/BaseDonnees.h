@@ -20,4 +20,5 @@ public:
 	void deconnexion();
 	void selectUsager();
 	void ajouteUsager(char *nom, char *prenom);
+
 };

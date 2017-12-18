@@ -37,6 +37,10 @@ bool rechercheDiagonal_NW_SE(vector<list<int>> grille, point jeton, int couleurJ
 
 int main()
 {
+	cout << "test" << endl;
+	BaseDonnees bd;
+	bd.connexion();
+	bd.deconnexion();
 	point posTriangle(150, 60);
 	point posShape1();
 	point posShape2();
@@ -131,7 +135,9 @@ int main()
 	
 
 	}
+	
 	return 0;
+
 }
 void nomJoueurs(string &Rouge, string &Jaune)
 {

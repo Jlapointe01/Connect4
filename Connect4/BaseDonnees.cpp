@@ -87,7 +87,7 @@ void BaseDonnees::selectUsager() {
 		connexion();
 
 		//S'il y a un problème avec la requête on quitte l'application sinon on affiche le résultat
-		if (SQL_SUCCESS != SQLExecDirect(sqlStmtHandle, (SQLWCHAR*)L"SELECT usagerprenom, usagernom FROM usager", SQL_NTS)) {
+		if (SQL_SUCCESS != SQLExecDirect(sqlStmtHandle, (SQLWCHAR*)L"SELECT username FROM tblJoueur", SQL_NTS)) {
 			throw string("Erreur dans la requête");
 		}
 		else {
