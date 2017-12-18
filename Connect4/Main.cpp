@@ -270,21 +270,22 @@ bool rechercheGagnant(vector<list<int>> grille, point jeton, int couleurJeton) {
 		|| rechercheDiagonal_NE_SW(grille, jeton, couleurJeton) == true || rechercheDiagonal_NW_SE(grille, jeton, couleurJeton) == true)
 		return true;
 	return false;
-}
-
-bool rechercheVertical(vector<list<int>> grille, point jeton, int couleurJeton) {
+}bool rechercheVertical(vector<list<int>> grille, point jeton, int couleurJeton) {
 
 	list<int>::iterator it = grille[jeton.x].begin();
 
 	for (int i = 0; i < jeton.y; i++)
 		it++;
 
-	for (int i = 0; i < 3; i++) {
-		it--;
-		if (*it != couleurJeton)
-			return false;
+	if (jeton.y > 3) {
+		for (int i = 0; i < 3; i++) {
+			it--;
+			if (*it != couleurJeton)
+				return false;
+		}
+		return true;
 	}
-	return true;
+	return false;
 }
 
 bool rechercheHorizontal(vector<list<int>> grille, point jeton, int couleurJeton) {
