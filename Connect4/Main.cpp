@@ -242,6 +242,7 @@ bool siVide(list<int>::iterator& it)
 		return false;
 	return true;
 }
+
 bool insererJeton(vector<list<int>> &grille, int couleurJeton, int colonne)
 {
 	list<int>::iterator it = grille[colonne].begin();
