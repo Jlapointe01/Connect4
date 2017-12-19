@@ -26,7 +26,7 @@ void nomJoueurs(string &Rouge, string &Jaune);//Problème pas de console c'est un
 void left(CircleShape &triangle, point &posTriangle);
 void right(CircleShape &triangle, point &posTriangle);
 void positionMouse(CircleShape &triangle, int &x, int y, int &colonne);
-void changementTour(CircleShape &triangle, int &tour);
+void changementTour(CircleShape &triangle, int &joueurCourant);
 void initialiser(vector<list<int>> &grille);
 bool insererJeton(vector<list<int>> &grille, int couleurJeton, int colonne);
 bool rechercheGagnant(vector<list<int>> grille, point jeton, int couleurJeton);
@@ -52,7 +52,6 @@ int main()
 	Texture map;
 	bool terminer = false;
 	int col = 0;
-	int tour = 0;
 
 	vector<list<int>> grille(7);
 
@@ -141,8 +140,9 @@ int main()
 				}
 				if (event.type == sf::Event::MouseButtonReleased)
 				{
-					insererJeton(grille, couleurJeton, colonne);
-					changementTour(triangle, tour);
+					insererJeton(grille, joueurCourant, colonne);
+					
+					changementTour(triangle, joueurCourant);
 				}
 			}
 			window.clear();
@@ -241,17 +241,17 @@ void positionMouse(CircleShape &triangle, int &x, int y, int &colonne)
 	}
 	triangle.setPosition(Vector2f(x, y));
 }
-void changementTour(CircleShape &triangle, int &tour)
+void changementTour(CircleShape &triangle, int &joueurCourant)
 {
-	if (triangle.getFillColor() == sf::Color::Red)
+	if (joueurCourant == 1)
 	{
 		triangle.setFillColor(sf::Color::Yellow);
-		tour = 2;
+		joueurCourant = 2;
 	}
 	else
 	{
 		triangle.setFillColor(sf::Color::Red);
-		tour = 1;
+		joueurCourant = 1;
 	}
 }
 bool siVide(list<int>::iterator& it)

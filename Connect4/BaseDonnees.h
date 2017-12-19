@@ -20,5 +20,8 @@ public:
 	void deconnexion();
 	void selectUsager();
 	void ajouteUsager(char *nom, char *prenom);
+	void updatePointage();
+	int getPointage();
+	int getMeilleurPointage();
 
 };
