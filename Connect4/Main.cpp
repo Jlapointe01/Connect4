@@ -46,6 +46,7 @@ int main()
 	int joueurCourant = rouge;
 	int colonne = 1;
 	int tour = 1;
+	bool gagne = true;
 	
 	RenderWindow window(sf::VideoMode(1278, 1106), "Connect 4");
 	CircleShape shape1(50.f);
@@ -142,7 +143,7 @@ int main()
 				}
 				if (event.type == sf::Event::MouseButtonReleased)
 				{
-					insererJeton(grille, joueurCourant, colonne);
+					gagne = insererJeton(grille, joueurCourant, colonne);
 					
 					changementTour(triangle, joueurCourant);
 				}
