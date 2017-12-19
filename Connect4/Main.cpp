@@ -140,7 +140,6 @@ int main()
 			}
 			window.clear();
 			dessiner(grille, window, _map, triangle);
-			window.clear();
 			
 		}
 
