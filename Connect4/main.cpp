@@ -70,12 +70,16 @@ int main()
 
 		while (terminer == false)
 		{
+
+			if (gagner == true) {
+				initialiser(grille);
+				gagner = false;
+			}
+
 			if (joueurCourant == rouge)
 				triangle.setFillColor(Color::Red);
 			else
 				triangle.setFillColor(Color::Yellow);
-
-
 
 			while (window.pollEvent(event))
 			{
@@ -141,6 +145,9 @@ int main()
 
 void initialiser(vector<list<int>> &grille) {
 	//Initialise la grille
+	for (int i = 0; i < 7; i++)
+		grille[i].clear();
+	
 	for (int i = 0; i < 7; i++) {
 		for (int k = 0; k < 7; k++) {
 			grille[i].push_back(0);
@@ -225,7 +232,7 @@ bool rechercheVertical(vector<list<int>> &grille, point jeton, int couleurJeton)
 	for (int i = 0; i < jeton.y; i++)
 		it++;
 
-	if (jeton.y > 3) {
+	if (jeton.y >= 3) {
 		for (int i = 0; i < 3; i++) {
 			it--;
 			if (*it != couleurJeton)
