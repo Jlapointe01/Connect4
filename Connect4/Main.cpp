@@ -39,23 +39,18 @@ void dessiner(vector<list<int>> &grille, RenderWindow &window, Sprite map, Circl
 int main()
 {
 	point posTriangle(150, 60);
-	point posShape1();
-	point posShape2();
 	const int rouge = 1,
 		jaune = 2;
 	int joueurCourant = rouge;
-	int colonne = 1;
-	int tour = 1;
-	bool gagne = true;
-	
+	CircleShape jetons[6][7];
+
 	RenderWindow window(sf::VideoMode(1278, 1106), "Connect 4");
-	CircleShape shape1(50.f);
-	CircleShape shape2(50.f);
 	CircleShape triangle(35, 3);
 	Texture map;
 	bool terminer = false;
 	int col = 0;
-
+	int tour = 0;
+	bool gagner = false;
 	vector<list<int>> grille(7);
 
 	initialiser(grille);
@@ -64,13 +59,6 @@ int main()
 		cout << "Erreur";
 
 	Sprite _map(map);
-	shape1.setFillColor(sf::Color::Red);
-	shape2.setFillColor(sf::Color::Yellow);
-
-	shape2.setPosition(Vector2f(1112, 940));
-	shape1.setPosition(Vector2f(241, 765));
-
-
 	triangle.setPosition(Vector2f(posTriangle.x, posTriangle.y));
 	triangle.rotate(180);
 
@@ -81,12 +69,16 @@ int main()
 
 		while (terminer == false)
 		{
+
+			if (gagner == true) {
+				initialiser(grille);
+				gagner = false;
+			}
+
 			if (joueurCourant == rouge)
 				triangle.setFillColor(Color::Red);
 			else
 				triangle.setFillColor(Color::Yellow);
-
-
 
 			while (window.pollEvent(event))
 			{
@@ -125,25 +117,23 @@ int main()
 						}
 						break;
 					case Keyboard::Return:
-						
+						gagner = insererJeton(grille, joueurCourant, col);
+
+
 						if (joueurCourant == rouge)
 							joueurCourant = jaune;
 						else
 							joueurCourant = rouge;
-
-
-
-
 						break;
 					}
 				}
 				if (event.type == sf::Event::MouseMoved)
 				{
-					positionMouse(triangle, event.mouseMove.x, posTriangle.y, colonne);//puisqu'on veut que le triangle reste en haut
+					positionMouse(triangle, event.mouseMove.x, posTriangle.y, col);//puisqu'on veut que le triangle reste en haut
 				}
 				if (event.type == sf::Event::MouseButtonReleased)
 				{
-					gagne = insererJeton(grille, joueurCourant, colonne);
+					gagner = insererJeton(grille, joueurCourant, col);
 					
 					changementTour(triangle, joueurCourant);
 				}
