@@ -149,10 +149,9 @@ int main()
 				}
 			}
 			window.clear();
-			window.draw(_map);
-			window.draw(shape2);
-			window.draw(triangle);
-			window.display();
+			dessiner(grille, window, _map, triangle);
+			window.clear();
+			
 		}
 
 
