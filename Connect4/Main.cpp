@@ -10,8 +10,6 @@
 //Difference gauche et droite : 174 px
 //Début 1ère colonne : 63 px
 //Fin 1ère colonne : 237 px
-using namespace sf;
-using namespace std;
 struct point {
 	int x;
 	int y;
@@ -20,14 +18,17 @@ struct point {
 		y = y1;
 	}
 };
-const int nbX = 7;
-const int nbY = 6;
-void nomJoueurs(string &Rouge, string &Jaune);//Problème pas de console c'est une fenêtre
+
+
+using namespace sf;
+using namespace std;
+
+void initialiser(vector<list<int>> &grille);
+bool siVide(list<int>::iterator& it);
+
 void left(CircleShape &triangle, point &posTriangle);
 void right(CircleShape &triangle, point &posTriangle);
 void positionMouse(CircleShape &triangle, int &x, int y, int &colonne);
-void changementTour(CircleShape &triangle, int &joueurCourant);
-void initialiser(vector<list<int>> &grille);
 bool insererJeton(vector<list<int>> &grille, int couleurJeton, int colonne);
 bool rechercheGagnant(vector<list<int>> &grille, point jeton, int couleurJeton);
 bool rechercheVertical(vector<list<int>> &grille, point jeton, int couleurJeton);
@@ -35,15 +36,13 @@ bool rechercheHorizontal(vector<list<int>> &grille, point jeton, int couleurJeto
 bool rechercheDiagonal_NE_SW(vector<list<int>> &grille, point jeton, int couleurJeton);
 bool rechercheDiagonal_NW_SE(vector<list<int>> &grille, point jeton, int couleurJeton);
 void dessiner(vector<list<int>> &grille, RenderWindow &window, Sprite map, CircleShape triangle);
-
+void changementTour(CircleShape &triangle, int &joueurCourant);
 int main()
 {
 	point posTriangle(150, 60);
 	const int rouge = 1,
 		jaune = 2;
 	int joueurCourant = rouge;
-	CircleShape jetons[6][7];
-
 	RenderWindow window(sf::VideoMode(1278, 1106), "Connect 4");
 	CircleShape triangle(35, 3);
 	Texture map;
@@ -116,7 +115,7 @@ int main()
 							col--;
 						}
 						break;
-					case Keyboard::Return:
+				/*	case Keyboard::Return:
 						gagner = insererJeton(grille, joueurCourant, col);
 
 
@@ -124,7 +123,7 @@ int main()
 							joueurCourant = jaune;
 						else
 							joueurCourant = rouge;
-						break;
+						break;*/
 					}
 				}
 				if (event.type == sf::Event::MouseMoved)
@@ -134,13 +133,12 @@ int main()
 				if (event.type == sf::Event::MouseButtonReleased)
 				{
 					gagner = insererJeton(grille, joueurCourant, col);
-					
+
 					changementTour(triangle, joueurCourant);
 				}
 			}
 			window.clear();
 			dessiner(grille, window, _map, triangle);
-			
 		}
 
 
@@ -148,19 +146,14 @@ int main()
 	}
 	return 0;
 }
-void nomJoueurs(string &Rouge, string &Jaune)
-{
-	cout << "Indiquer le nom du joueur Rouge : " << endl;
-	cin >> Rouge;
-	cout << "Indiquer le nom du joueur Jaune : " << endl;
-	cin >> Jaune;
-}
-void initialiser(vector<list<int>> &grille)
-{
-	for (int i = 0; i < nbX; i++)
-	{
-		for (int j = 0; j < nbY; j++)
-		{
+
+void initialiser(vector<list<int>> &grille) {
+	//Initialise la grille
+	for (int i = 0; i < 7; i++)
+		grille[i].clear();
+
+	for (int i = 0; i < 7; i++) {
+		for (int k = 0; k < 7; k++) {
 			grille[i].push_back(0);
 		}
 	}
@@ -191,8 +184,7 @@ void right(CircleShape &triangle, point &posTriangle) {
 		triangle.setPosition(Vector2f(posTriangle.x + 175, posTriangle.y));
 	}
 }
-//Début 1ère colonne : 63 px
-//Fin 1ère colonne : 237 px
+
 void positionMouse(CircleShape &triangle, int &x, int y, int &colonne)
 {
 	if (x >= 0 && x <= 237)
@@ -215,12 +207,12 @@ void positionMouse(CircleShape &triangle, int &x, int y, int &colonne)
 		x = 675;
 		colonne = 3;
 	}
-	else if (x>=763 && x <= 937)
+	else if (x >= 763 && x <= 937)
 	{
 		x = 850;
 		colonne = 4;
 	}
-	else if ( x>=938 && x<=1112)
+	else if (x >= 938 && x <= 1112)
 	{
 		x = 1025;
 		colonne = 5;
@@ -232,26 +224,12 @@ void positionMouse(CircleShape &triangle, int &x, int y, int &colonne)
 	}
 	triangle.setPosition(Vector2f(x, y));
 }
-void changementTour(CircleShape &triangle, int &joueurCourant)
-{
-	if (joueurCourant == 1)
-	{
-		triangle.setFillColor(sf::Color::Yellow);
-		joueurCourant = 2;
-	}
-	else
-	{
-		triangle.setFillColor(sf::Color::Red);
-		joueurCourant = 1;
-	}
-}
 bool siVide(list<int>::iterator& it)
 {
 	if (*it != 0)
 		return false;
 	return true;
 }
-
 bool insererJeton(vector<list<int>> &grille, int couleurJeton, int colonne)
 {
 	list<int>::iterator it = grille[colonne].begin();
@@ -475,4 +453,17 @@ void dessiner(vector<list<int>> &grille, RenderWindow &window, Sprite map, Circl
 		posX += 175;
 	}
 	window.display();
+}
+void changementTour(CircleShape &triangle, int &joueurCourant)
+{
+	if (joueurCourant == 1)
+	{
+		triangle.setFillColor(sf::Color::Yellow);
+		joueurCourant = 2;
+	}
+	else
+	{
+		triangle.setFillColor(sf::Color::Red);
+		joueurCourant = 1;
+	}
 }
