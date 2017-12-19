@@ -29,11 +29,13 @@ void positionMouse(CircleShape &triangle, int &x, int y, int &colonne);
 void changementTour(CircleShape &triangle, int &joueurCourant);
 void initialiser(vector<list<int>> &grille);
 bool insererJeton(vector<list<int>> &grille, int couleurJeton, int colonne);
-bool rechercheGagnant(vector<list<int>> grille, point jeton, int couleurJeton);
-bool rechercheVertical(vector<list<int>> grille, point jeton, int couleurJeton);
-bool rechercheHorizontal(vector<list<int>> grille, point jeton, int couleurJeton);
-bool rechercheDiagonal_NE_SW(vector<list<int>> grille, point jeton, int couleurJeton);
-bool rechercheDiagonal_NW_SE(vector<list<int>> grille, point jeton, int couleurJeton);
+bool rechercheGagnant(vector<list<int>> &grille, point jeton, int couleurJeton);
+bool rechercheVertical(vector<list<int>> &grille, point jeton, int couleurJeton);
+bool rechercheHorizontal(vector<list<int>> &grille, point jeton, int couleurJeton);
+bool rechercheDiagonal_NE_SW(vector<list<int>> &grille, point jeton, int couleurJeton);
+bool rechercheDiagonal_NW_SE(vector<list<int>> &grille, point jeton, int couleurJeton);
+void dessiner(vector<list<int>> &grille, RenderWindow &window, Sprite map, CircleShape triangle);
+
 int main()
 {
 	point posTriangle(150, 60);
