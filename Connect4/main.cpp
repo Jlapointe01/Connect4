@@ -43,10 +43,8 @@ int main()
 	const int rouge = 1,
 			  jaune = 2;
 	int joueurCourant = rouge;
-	CircleShape jetons[6][7];
-
 	RenderWindow window(sf::VideoMode(1278, 1106), "Connect 4");
-	CircleShape triangle(35, 3);
+	CircleShape triangle(35,3);
 	Texture map;
 	bool terminer = false;
 	int col = 0;
