@@ -264,7 +264,8 @@ bool siVide(list<int>::iterator& it)
 bool insererJeton(vector<list<int>> &grille, int couleurJeton, int colonne)
 {
 	list<int>::iterator it = grille[colonne].begin();
-
+	bool jetonPlacer = false;
+	bool gagner = false;
 	point posJeton(colonne, 0);
 
 
@@ -272,7 +273,8 @@ bool insererJeton(vector<list<int>> &grille, int couleurJeton, int colonne)
 	{
 		if (*it == 0) {
 			*it = couleurJeton;
-			rechercheGagnant(grille, posJeton, couleurJeton);
+			jetonPlacer = true;
+			gagner = rechercheGagnant(grille, posJeton, couleurJeton);
 		}
 		else {
 			it++;
@@ -280,23 +282,26 @@ bool insererJeton(vector<list<int>> &grille, int couleurJeton, int colonne)
 			if (it == grille[colonne].end())
 				return false;
 		}
-	} while (*it != 0);
-	return true;
+	} while (jetonPlacer == false);
+
+	return gagner;
 }
 
-bool rechercheGagnant(vector<list<int>> grille, point jeton, int couleurJeton) {
+bool rechercheGagnant(vector<list<int>> &grille, point jeton, int couleurJeton) {
 	if (rechercheHorizontal(grille, jeton, couleurJeton) == true || rechercheVertical(grille, jeton, couleurJeton) == true
 		|| rechercheDiagonal_NE_SW(grille, jeton, couleurJeton) == true || rechercheDiagonal_NW_SE(grille, jeton, couleurJeton) == true)
 		return true;
 	return false;
-}bool rechercheVertical(vector<list<int>> grille, point jeton, int couleurJeton) {
+}
+
+bool rechercheVertical(vector<list<int>> &grille, point jeton, int couleurJeton) {
 
 	list<int>::iterator it = grille[jeton.x].begin();
 
 	for (int i = 0; i < jeton.y; i++)
 		it++;
 
-	if (jeton.y > 3) {
+	if (jeton.y >= 3) {
 		for (int i = 0; i < 3; i++) {
 			it--;
 			if (*it != couleurJeton)
@@ -307,7 +312,7 @@ bool rechercheGagnant(vector<list<int>> grille, point jeton, int couleurJeton) {
 	return false;
 }
 
-bool rechercheHorizontal(vector<list<int>> grille, point jeton, int couleurJeton) {
+bool rechercheHorizontal(vector<list<int>> &grille, point jeton, int couleurJeton) {
 
 	int x1 = jeton.x;
 	int x2 = jeton.x;
@@ -350,7 +355,7 @@ bool rechercheHorizontal(vector<list<int>> grille, point jeton, int couleurJeton
 	return false;
 }
 
-bool rechercheDiagonal_NE_SW(vector<list<int>> grille, point jeton, int couleurJeton) {
+bool rechercheDiagonal_NE_SW(vector<list<int>> &grille, point jeton, int couleurJeton) {
 
 	int x1 = jeton.x;
 	int y1 = jeton.y;
@@ -376,7 +381,7 @@ bool rechercheDiagonal_NE_SW(vector<list<int>> grille, point jeton, int couleurJ
 			return true;
 	}
 
-	while (x1 != 6 && y1 != 6) // regarde NE
+	while (x2 != 6 && y2 != 6) // regarde NE
 	{
 		x2++;
 		y2++;
@@ -397,7 +402,7 @@ bool rechercheDiagonal_NE_SW(vector<list<int>> grille, point jeton, int couleurJ
 
 }
 
-bool rechercheDiagonal_NW_SE(vector<list<int>> grille, point jeton, int couleurJeton) {
+bool rechercheDiagonal_NW_SE(vector<list<int>> &grille, point jeton, int couleurJeton) {
 
 	int x1 = jeton.x;
 	int y1 = jeton.y;
@@ -424,13 +429,13 @@ bool rechercheDiagonal_NW_SE(vector<list<int>> grille, point jeton, int couleurJ
 			return true;
 	}
 
-	while (x1 != 0 && y1 != 6) //regarde NW
+	while (x2 != 0 && y2 != 6) //regarde NW
 	{
-		x1--;
-		y1++;
+		x2--;
+		y2++;
 
-		list<int>::iterator it = grille[x1].begin();
-		for (int i = 0; i < y1; i++)
+		list<int>::iterator it = grille[x2].begin();
+		for (int i = 0; i < y2; i++)
 			it++;
 
 		if (*it != couleurJeton)
@@ -442,4 +447,41 @@ bool rechercheDiagonal_NW_SE(vector<list<int>> grille, point jeton, int couleurJ
 			return true;
 	}
 	return false;
+}
+
+void dessiner(vector<list<int>> &grille, RenderWindow &window, Sprite map, CircleShape triangle) {
+
+
+	CircleShape jetons[7][7];
+	int posX = 67;
+	int posY = 940;
+
+	window.draw(map);
+	window.draw(triangle);
+
+	for (int i = 0; i < 7; i++) {
+		sf::Color couleur;
+		list<int>::iterator it = grille[i].begin();
+		for (int k = 0; k < 7; k++)
+		{
+			if (*it == 0)
+				couleur = Color::Transparent;
+			else if (*it == 1)
+				couleur = Color::Red;
+			else
+				couleur = Color::Yellow;
+			it++;
+
+			jetons[i][k].setRadius(50.f);
+			jetons[i][k].setFillColor(couleur);
+			jetons[i][k].setPosition(Vector2f(posX, posY));
+
+			window.draw(jetons[i][k]);
+			posY -= 175;
+
+		}
+		posY = 940;
+		posX += 175;
+	}
+	window.display();
 }
