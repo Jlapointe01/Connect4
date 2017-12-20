@@ -1,3 +1,5 @@
+//Auteur : Jean-Christophe Boisvert et Joel Lapointe
+//But : Créer un jeu de Connect4
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include "liste.hpp"
@@ -23,13 +25,13 @@ struct point {
 using namespace sf;
 using namespace std;
 
-void initialiser(vector<list<int>> &grille);
-bool siVide(list<int>::iterator& it);
+void initialiser(vector<list<int>> &grille);//initialise la grille 
+bool siVide(list<int>::iterator& it);	//vérifie si la grille est vide
 
-void left(CircleShape &triangle, point &posTriangle);
-void right(CircleShape &triangle, point &posTriangle);
-void positionMouse(CircleShape &triangle, int &x, int y, int &colonne);
-bool insererJeton(vector<list<int>> &grille, int couleurJeton, int colonne);
+void left(CircleShape &triangle, point &posTriangle); //se déplace a gauche
+void right(CircleShape &triangle, point &posTriangle);	//se déplace a droite
+void positionMouse(CircleShape &triangle, int &x, int y, int &colonne); //se déplace vis a vis la colonne ou la souris est placé
+bool insererJeton(vector<list<int>> &grille, int couleurJeton, int colonne);	
 bool rechercheGagnant(vector<list<int>> &grille, point jeton, int couleurJeton);
 bool rechercheVertical(vector<list<int>> &grille, point jeton, int couleurJeton);
 bool rechercheHorizontal(vector<list<int>> &grille, point jeton, int couleurJeton);
@@ -52,8 +54,8 @@ int main()
 	int nbloseJoueur1 = 0;
 	int nbwinJoueur2 = 0;
 	int nbloseJoueur2 = 0;
-	int nbdrawJoueur2 = 0;
 	int nbdrawJoueur1 = 0;
+	int nbdrawJoueur2 = 0;
 
 	RenderWindow window(sf::VideoMode(1278, 1106), "Connect 4");
 	CircleShape triangle(35, 3);
@@ -99,17 +101,17 @@ int main()
 					terminer = true;
 					inscription = false;
 				}
-				if (event.type == sf::Event::TextEntered)
+				if (event.type == sf::Event::TextEntered)		//va faire entrer les nom des 2 joueurs pour les mettres dans les variables joueurs 1 et joueurs 2
 				{
-					if (event.text.unicode == 13)//touche enter
+					if (event.text.unicode == 13)//touche enter confirme le nom
 					{
-						if (label.getString() == "Joueur 1 : ")
+						if (label.getString() == "Joueur 1 : ") // après joueur 1 
 						{
 							joueur1 = text.getString();
 							label.setString("Joueur 2 : ");
 							text.setString("");
 						}
-						else if (label.getString() == "Joueur 2 : ")
+						else if (label.getString() == "Joueur 2 : ")//après joueur 2 ferme et commence le jeu
 						{
 							joueur2 = text.getString();
 							label.setString("");
@@ -118,7 +120,7 @@ int main()
 							break;
 						}
 					}
-					else if(event.text.unicode == 8)//touche backspace
+					else if(event.text.unicode == 8)//touche backspace efface la derniere touche appuyer
 					{
 						string temp = text.getString();
 						temp = temp.substr(0, temp.length() - 1);
@@ -135,7 +137,7 @@ int main()
 				window.display();
 			}
 		}
-		while (terminer == false)
+		while (terminer == false)	//tant que la partie n'est pas terminé
 		{
 			if (joueurCourant == rouge)
 				triangle.setFillColor(Color::Red);
@@ -146,31 +148,34 @@ int main()
 			{
 				if (event.type == sf::Event::Closed)
 					window.close();
-				if (gagner == true) {
+				if (gagner == true) {	//si on a gagné
 					sf::Text textWinner;
 					textWinner.setFont(font);
 					textWinner.setFillColor(sf::Color::Black);
 					textWinner.setString("");
-					if (tour == 1)
+					bd.obtenirPointage(joueur1, nbwinJoueur1, nbloseJoueur1, nbdrawJoueur1);
+					bd.obtenirPointage(joueur2, nbwinJoueur2, nbloseJoueur2, nbdrawJoueur2);
+					if (tour == 1)	//si le joueur 2 a gagné
 					{
 						textWinner.setString(joueur2 + " gagne" " Peser sur le X pour fermer");
 						nbwinJoueur2++;
 						nbloseJoueur1++;
 					}
-					else
+					else //si le joueur 1 a gagné
 					{
 						textWinner.setString(joueur1 + " gagne" " Peser sur le X pour fermer");
 						nbwinJoueur1++;
 						nbloseJoueur2++;
 
 					}
+					bd.modifierPointage(joueur1, nbwinJoueur1, nbloseJoueur1, nbdrawJoueur1);
+					bd.modifierPointage(joueur2, nbwinJoueur2, nbloseJoueur2, nbdrawJoueur2);
 					window.clear(sf::Color::White);
 					window.draw(textWinner);
 					window.display();
-					//gagner = false;
 				}
 				else 
-					if (verifieSiNul(grille))
+					if (verifieSiNul(grille))	//si la partie est nulle
 				{
 					sf::Text textDraw;
 					textDraw.setFont(font);
@@ -218,15 +223,6 @@ int main()
 									col--;
 								}
 								break;
-							/*	case Keyboard::Return:
-									gagner = insererJeton(grille, joueurCourant, col);
-
-
-									if (joueurCourant == rouge)
-										joueurCourant = jaune;
-									else
-										joueurCourant = rouge;
-									break;*/
 						}
 					}
 					if (event.type == sf::Event::MouseMoved)
@@ -276,7 +272,7 @@ void initialiser(vector<list<int>> &grille) {
 
 void left(CircleShape &triangle, point &posTriangle)
 {
-	if (posTriangle.x == 150)
+	if (posTriangle.x == 150)//si il est a la première colonne met le a la fin
 	{
 		posTriangle.x = 1200;
 		triangle.setPosition(Vector2f(posTriangle.x, posTriangle.y));
@@ -289,7 +285,7 @@ void left(CircleShape &triangle, point &posTriangle)
 
 
 void right(CircleShape &triangle, point &posTriangle) {
-	if (posTriangle.x == 1200)
+	if (posTriangle.x == 1200)//si il est a la dernière colonne met le au début
 	{
 		posTriangle.x = 150;
 		triangle.setPosition(Vector2f(posTriangle.x, posTriangle.y));
@@ -302,37 +298,37 @@ void right(CircleShape &triangle, point &posTriangle) {
 
 void positionMouse(CircleShape &triangle, int &x, int y, int &colonne)
 {
-	if (x >= 0 && x <= 237)
+	if (x >= 0 && x <= 237)	//si il est vers la première colonne
 	{
 		x = 150;
 		colonne = 0;
 	}
-	else if (x >= 238 && x <= 412)
+	else if (x >= 238 && x <= 412)//si il est vers la deuxième colonne
 	{
 		x = 325;
 		colonne = 1;
 	}
-	else if (x >= 413 && x <= 587)
+	else if (x >= 413 && x <= 587)//si il est vers la troisième colonne
 	{
 		x = 500;
 		colonne = 2;
 	}
-	else if (x >= 588 && x <= 762)
+	else if (x >= 588 && x <= 762)//si il est vers la quatrième colonne
 	{
 		x = 675;
 		colonne = 3;
 	}
-	else if (x >= 763 && x <= 937)
+	else if (x >= 763 && x <= 937)//si il est vers la cinquième colonne
 	{
 		x = 850;
 		colonne = 4;
 	}
-	else if (x >= 938 && x <= 1112)
+	else if (x >= 938 && x <= 1112)//si il est vers la sixième colonne
 	{
 		x = 1025;
 		colonne = 5;
 	}
-	else if (x >= 1113 && x <= 1278)
+	else if (x >= 1113 && x <= 1278)//si il est vers la septième colonne
 	{
 		x = 1200;
 		colonne = 6;

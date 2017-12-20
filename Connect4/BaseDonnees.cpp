@@ -166,7 +166,7 @@ void BaseDonnees::ajouteUsager(char *nom, char *prenom) {
 
 	deconnexion();
 }
-void BaseDonnees::modifierPointage(int idjoueur, int win, int lose, int draw)
+void BaseDonnees::modifierPointage(string joueur, int win, int lose, int draw)
 {
 	try
 	{
@@ -174,12 +174,12 @@ void BaseDonnees::modifierPointage(int idjoueur, int win, int lose, int draw)
 
 		SQLRETURN retcode;
 
-		retcode = SQLBindParameter(sqlStmtHandle, 1, SQL_PARAM_INPUT, SQL_C_LONG, SQL_INTEGER, 0, 0, &idjoueur, 0, 0);
+		retcode = SQLBindParameter(sqlStmtHandle, 1, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_CHAR, 50, 0, &joueur, 0, 0);
 		retcode = SQLBindParameter(sqlStmtHandle, 2, SQL_PARAM_INPUT, SQL_C_LONG, SQL_INTEGER, 0, 0, &win, 0, 0);
 		retcode = SQLBindParameter(sqlStmtHandle, 3, SQL_PARAM_INPUT, SQL_C_LONG, SQL_INTEGER, 0, 0, &lose, 0, 0);
 		retcode = SQLBindParameter(sqlStmtHandle, 4, SQL_PARAM_INPUT, SQL_C_LONG, SQL_INTEGER, 0, 0, &draw, 0, 0);
 
-		retcode = SQLPrepare(sqlStmtHandle, (SQLWCHAR*)L"EXEC modifierPointage(?, ?, ?, ?)", SQL_NTS);
+		retcode = SQLPrepare(sqlStmtHandle, (SQLWCHAR*)L"EXEC modification(?, ?, ?, ?)", SQL_NTS);
 		retcode = SQLExecute(sqlStmtHandle);
 
 		if (SQL_SUCCESS != retcode)
@@ -196,13 +196,16 @@ void BaseDonnees::modifierPointage(int idjoueur, int win, int lose, int draw)
 	deconnexion();
 }
 
-void BaseDonnees::obtenirPointage(int idjoueur, int &win, int &lose, int &draw)
+void BaseDonnees::obtenirPointage(string joueur, int &win, int &lose, int &draw)
 {
 	try
 	{
 		connexion();
-
-		if (SQL_SUCCESS != SQLExecDirect(sqlStmtHandle, (SQLWCHAR*)L"SELECT username, win, lose, draw FROM vue_pointage WHERE idjoueur = ?", SQL_NTS))
+		SQLRETURN retcode;
+		retcode = SQLBindParameter(sqlStmtHandle, 1, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_CHAR, 50, 0, &joueur, 0, 0);
+		retcode = SQLPrepare(sqlStmtHandle, (SQLWCHAR*)L"SELECT win, lose, draw FROM pointage WHERE username = ? ", SQL_NTS);
+		retcode = SQLExecute(sqlStmtHandle);
+		if (SQL_SUCCESS != retcode)
 		{
 			throw string("Erreur dans la requête");
 		}
@@ -210,14 +213,19 @@ void BaseDonnees::obtenirPointage(int idjoueur, int &win, int &lose, int &draw)
 		{
 			SQLCHAR username[SQL_RESULT_LEN];
 			SQLLEN ptrusername;
-			//SQLINTEGER w;
-			//SQLINTEGER l;
-			//SQLINTEGER d;
-
-			SQLGetData(sqlStmtHandle, 1, SQL_CHAR, username, SQL_RESULT_LEN, &ptrusername);
-			SQLGetData(sqlStmtHandle, 2, SQL_INTEGER, &win, 0, 0);
-			SQLGetData(sqlStmtHandle, 3, SQL_INTEGER, &lose, 0, 0);
-			SQLGetData(sqlStmtHandle, 4, SQL_INTEGER, &draw, 0, 0);
+			SQLINTEGER w;
+			SQLINTEGER l;
+			SQLINTEGER d;
+			SQLLEN wl;
+			int *test = 0;
+			test = new int;
+			/*SQLGetData(sqlStmtHandle, 1, SQL_CHAR, username, SQL_RESULT_LEN, &ptrusername);*/
+			retcode = SQLFetch(sqlStmtHandle);
+			while (SQLFetch(sqlStmtHandle) == SQL_SUCCESS) {
+				retcode = SQLGetData(sqlStmtHandle, 1, SQL_C_DEFAULT, &win, SQL_RESULT_LEN, &wl);
+				SQLGetData(sqlStmtHandle, 2, SQL_C_DEFAULT, &lose, SQL_RESULT_LEN, 0);
+				SQLGetData(sqlStmtHandle, 3, SQL_INTEGER, &draw, 0, 0);
+			}
 		}
 	}
 	catch (string const& e)
@@ -229,7 +237,7 @@ void BaseDonnees::obtenirPointage(int idjoueur, int &win, int &lose, int &draw)
 	deconnexion();
 }
 
-void BaseDonnees::enregistrerGrille(int idjoueur1, int idjoueur2, vector<list<int>>  &grille)
+void BaseDonnees::enregistrerGrille(string joueur1, string joueur2, vector<list<int>>  &grille)
 {
 	try
 	{
@@ -244,8 +252,8 @@ void BaseDonnees::enregistrerGrille(int idjoueur1, int idjoueur2, vector<list<in
 		retcode = SQLBindParameter(sqlStmtHandle, 5, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_CHAR, 6, 0, &compacterColonne(grille, 4), 0, 0);
 		retcode = SQLBindParameter(sqlStmtHandle, 6, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_CHAR, 6, 0, &compacterColonne(grille, 5), 0, 0);
 		retcode = SQLBindParameter(sqlStmtHandle, 7, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_CHAR, 6, 0, &compacterColonne(grille, 6), 0, 0);
-		retcode = SQLBindParameter(sqlStmtHandle, 8, SQL_PARAM_INPUT, SQL_C_LONG, SQL_INTEGER, 0, 0, &idjoueur1, 0, 0);
-		retcode = SQLBindParameter(sqlStmtHandle, 9, SQL_PARAM_INPUT, SQL_C_LONG, SQL_INTEGER, 0, 0, &idjoueur2, 0, 0);
+		retcode = SQLBindParameter(sqlStmtHandle, 8, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_CHAR, 50, 0, &joueur1, 0, 0);
+		retcode = SQLBindParameter(sqlStmtHandle, 9, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_CHAR, 50, 0, &joueur2, 0, 0);
 		retcode = SQLPrepare(sqlStmtHandle, (SQLWCHAR*)L"UPDATE grilles SET colonne1 = ?, colonne2 = ?, colonne3 = ?, colonne4 = ?, colonne5 = ?, colonne6 = ?, colonne7 = ? WHERE idjoueur1 = ? AND idjoueur2 = ?",SQL_NTS);
 		retcode = SQLExecute(sqlStmtHandle);
 
@@ -263,7 +271,7 @@ void BaseDonnees::enregistrerGrille(int idjoueur1, int idjoueur2, vector<list<in
 	deconnexion();
 }
 
-void BaseDonnees::obtenirGrille(int idjoueur1, int idjoueur2, vector<list<int>> &grille)
+void BaseDonnees::obtenirGrille(string joueur1,string joueur2, vector<list<int>> &grille)
 {
 	try
 	{
@@ -271,8 +279,8 @@ void BaseDonnees::obtenirGrille(int idjoueur1, int idjoueur2, vector<list<int>> 
 
 		SQLRETURN retcode;
 
-		retcode = SQLBindParameter(sqlStmtHandle, 1, SQL_PARAM_INPUT, SQL_C_LONG, SQL_INTEGER, 0, 0, &idjoueur1, 0, 0);
-		retcode = SQLBindParameter(sqlStmtHandle, 2, SQL_PARAM_INPUT, SQL_C_LONG, SQL_INTEGER, 0, 0, &idjoueur2, 0, 0);
+		retcode = SQLBindParameter(sqlStmtHandle, 1, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_CHAR, 50, 0, &joueur1, 0, 0);
+		retcode = SQLBindParameter(sqlStmtHandle, 2, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_CHAR, 50, 0, &joueur2, 0, 0);
 		retcode = SQLPrepare(sqlStmtHandle, (SQLWCHAR*)L"SELECT colonne1, colonne2, colonne3, colonne4, colonne5, colonne6, colonne7 FROM grilles WHERE idjoueur1 = ? AND idjoueur2 = ?", SQL_NTS);
 		retcode = SQLExecute(sqlStmtHandle);
 
@@ -337,8 +345,8 @@ void BaseDonnees::creerPartie(string joueur1, string joueur2)
 
 		SQLRETURN retcode;
 
-		retcode = SQLBindParameter(sqlStmtHandle, 1, SQL_PARAM_INPUT, SQL_C_LONG, SQL_INTEGER, 0, 0, &joueur1, 0, 0);
-		retcode = SQLBindParameter(sqlStmtHandle, 2, SQL_PARAM_INPUT, SQL_C_LONG, SQL_INTEGER, 0, 0, &joueur2, 0, 0);
+		retcode = SQLBindParameter(sqlStmtHandle, 1, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_CHAR, 50, 0, &joueur1, 0, 0);
+		retcode = SQLBindParameter(sqlStmtHandle, 2, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_CHAR, 50, 0, &joueur2, 0, 0);
 		retcode = SQLPrepare(sqlStmtHandle, (SQLWCHAR*)L"EXEC creerPartie(?, ?)",SQL_NTS);
 		retcode = SQLExecute(sqlStmtHandle);
 
@@ -364,8 +372,8 @@ void BaseDonnees::supprimerPartie(string joueur1, string joueur2)
 
 		SQLRETURN retcode;
 
-		retcode = SQLBindParameter(sqlStmtHandle, 1, SQL_PARAM_INPUT, SQL_C_LONG, SQL_INTEGER, 0, 0, &joueur1, 0, 0);
-		retcode = SQLBindParameter(sqlStmtHandle, 2, SQL_PARAM_INPUT, SQL_C_LONG, SQL_INTEGER, 0, 0, &joueur2, 0, 0);
+		retcode = SQLBindParameter(sqlStmtHandle, 1, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_CHAR, 50, 0, &joueur1, 0, 0);
+		retcode = SQLBindParameter(sqlStmtHandle, 2, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_CHAR, 50, 0, &joueur2, 0, 0);
 		retcode = SQLPrepare(sqlStmtHandle, (SQLWCHAR*)L"EXEC supprimerPartie(?, ?)", SQL_NTS);
 		retcode = SQLExecute(sqlStmtHandle);
 
