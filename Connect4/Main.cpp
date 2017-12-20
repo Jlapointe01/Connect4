@@ -52,6 +52,9 @@ int main()
 	int nbloseJoueur1 = 0;
 	int nbwinJoueur2 = 0;
 	int nbloseJoueur2 = 0;
+	int nbdrawJoueur2 = 0;
+	int nbdrawJoueur1 = 0;
+
 	RenderWindow window(sf::VideoMode(1278, 1106), "Connect 4");
 	CircleShape triangle(35, 3);
 	Texture map;
@@ -150,13 +153,13 @@ int main()
 					textWinner.setString("");
 					if (tour == 1)
 					{
-						textWinner.setString(joueur2 + " gagne" "Peser sur le X pour fermer");
+						textWinner.setString(joueur2 + " gagne" " Peser sur le X pour fermer");
 						nbwinJoueur2++;
 						nbloseJoueur1++;
 					}
 					else
 					{
-						textWinner.setString(joueur1 + " gagne" "Peser sur le X pour fermer");
+						textWinner.setString(joueur1 + " gagne" " Peser sur le X pour fermer");
 						nbwinJoueur1++;
 						nbloseJoueur2++;
 
@@ -166,40 +169,55 @@ int main()
 					window.display();
 					//gagner = false;
 				}
-				else
+				else 
+					if (verifieSiNul(grille))
 				{
-					if (event.type == sf::Event::KeyPressed)
+					sf::Text textDraw;
+					textDraw.setFont(font);
+					textDraw.setFillColor(sf::Color::Black);
+
+					textDraw.setString("La partie est nulle" " Appuyez sur le X pour fermer");
+					nbdrawJoueur2++;
+					nbdrawJoueur1++;
+
+					window.clear(sf::Color::White);
+					window.draw(textDraw);
+					window.display();
+				}
+					else 
 					{
-						switch (event.key.code)
+						if (event.type == sf::Event::KeyPressed)
 						{
-						case Keyboard::Right:
-							if (posTriangle.x == 1200)
+							switch (event.key.code)
 							{
-								right(triangle, posTriangle);
-								posTriangle.x = 150;
-								col = 0;
-							}
-							else
-							{
-								right(triangle, posTriangle);
-								posTriangle.x += 175;
-								col++;
-							}
+							case Keyboard::Right:
+								if (posTriangle.x == 1200)
+								{
+									right(triangle, posTriangle);
+									posTriangle.x = 150;
+									col = 0;
+								}
+								else
+								{
+									right(triangle, posTriangle);
+									posTriangle.x += 175;
+									col++;
+								}
 							break;
-						case Keyboard::Left:
-							if (posTriangle.x == 150)
-							{
-								left(triangle, posTriangle);
-								posTriangle.x = 1200;
-								col = 6;
-							}
-							else
-							{
-								left(triangle, posTriangle);
-								posTriangle.x -= 175;
-								col--;
-							}
-							break;
+							case Keyboard::Left:
+								if (posTriangle.x == 150)
+								{
+									left(triangle, posTriangle);
+									posTriangle.x = 1200;
+									col = 6;
+								}
+								else
+								{
+									left(triangle, posTriangle);
+									posTriangle.x -= 175;
+									col--;
+								}
+								break;
 							/*	case Keyboard::Return:
 									gagner = insererJeton(grille, joueurCourant, col);
 
@@ -225,6 +243,7 @@ int main()
 			}
 			window.clear();
 			if (gagner == false)
+				if(!verifieSiNul(grille))
 				dessiner(grille, window, _map, triangle);
 		}
 
@@ -433,6 +452,7 @@ bool rechercheDiagonal_NE_SW(vector<list<int>> &grille, point jeton, int couleur
 	int x1 = jeton.x;
 	int y1 = jeton.y;
 	int x2 = jeton.x;
+
 	int y2 = jeton.y;
 	int nb = 1; //condition pour gagner
 
@@ -454,7 +474,7 @@ bool rechercheDiagonal_NE_SW(vector<list<int>> &grille, point jeton, int couleur
 			return true;
 	}
 
-	while (x2 != 6 && y2 != 6) // regarde NE
+	while (x2 != 6 && y2 != 5) // regarde NE
 	{
 		x2++;
 		y2++;
@@ -502,7 +522,7 @@ bool rechercheDiagonal_NW_SE(vector<list<int>> &grille, point jeton, int couleur
 			return true;
 	}
 
-	while (x2 != 0 && y2 != 6) //regarde NW
+	while (x2 != 0 && y2 != 5) //regarde NW
 	{
 		x2--;
 		y2++;
@@ -535,7 +555,7 @@ void dessiner(vector<list<int>> &grille, RenderWindow &window, Sprite map, Circl
 	for (int i = 0; i < 7; i++) {
 		sf::Color couleur;
 		list<int>::iterator it = grille[i].begin();
-		for (int k = 0; k < 7; k++)
+		for (int k = 0; k < 6; k++)
 		{
 			if (*it == 0)
 				couleur = Color::Transparent;
@@ -558,6 +578,7 @@ void dessiner(vector<list<int>> &grille, RenderWindow &window, Sprite map, Circl
 	}
 	window.display();
 }
+
 void changementTour(CircleShape &triangle, int &joueurCourant)
 {
 	if (joueurCourant == 1)
