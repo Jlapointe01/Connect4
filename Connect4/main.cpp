@@ -36,6 +36,7 @@ bool rechercheHorizontal(vector<list<int>> &grille, point jeton, int couleurJeto
 bool rechercheDiagonal_NE_SW(vector<list<int>> &grille, point jeton, int couleurJeton);
 bool rechercheDiagonal_NW_SE(vector<list<int>> &grille, point jeton, int couleurJeton);
 void dessiner(vector<list<int>> &grille, RenderWindow &window, Sprite map, CircleShape triangle);
+bool verifieSiNul(vector<list<int>> &grille);
 
 int main()
 {
@@ -50,6 +51,7 @@ int main()
 	int col = 0;
 	int tour = 0;
 	bool gagner = false;
+	bool nul = false;
 	vector<list<int>> grille(7);
 
 	initialiser(grille);
@@ -69,9 +71,10 @@ int main()
 		while (terminer == false)
 		{
 
-			if (gagner == true) {
+			if (gagner == true || nul == true) {
 				initialiser(grille);
 				gagner = false;
+				nul = false;
 			}
 
 			if (joueurCourant == rouge)
@@ -117,13 +120,14 @@ int main()
 						break;
 					case Keyboard::Return:
 						gagner = insererJeton(grille, joueurCourant, col);
-
+						nul = verifieSiNul(grille);
 											
 						if (joueurCourant == rouge)
 							joueurCourant = jaune;
 						else
 							joueurCourant = rouge;
 						break;
+
 					}
 				}
 				//if (event.type == sf::Event::MouseMoved)
@@ -147,7 +151,7 @@ void initialiser(vector<list<int>> &grille) {
 		grille[i].clear();
 	
 	for (int i = 0; i < 7; i++) {
-		for (int k = 0; k < 7; k++) {
+		for (int k = 0; k < 6; k++) {
 			grille[i].push_back(0);
 		}
 	}
@@ -289,6 +293,7 @@ bool rechercheDiagonal_NE_SW(vector<list<int>> &grille, point jeton, int couleur
 	int x1 = jeton.x;
 	int y1 = jeton.y;
 	int x2 = jeton.x;
+
 	int y2 = jeton.y;
 	int nb = 1; //condition pour gagner
 
@@ -310,7 +315,7 @@ bool rechercheDiagonal_NE_SW(vector<list<int>> &grille, point jeton, int couleur
 			return true;
 	}
 
-	while (x2 != 6 && y2 != 6) // regarde NE
+	while (x2 != 6 && y2 != 5) // regarde NE
 	{
 		x2++;
 		y2++;
@@ -358,7 +363,7 @@ bool rechercheDiagonal_NW_SE(vector<list<int>> &grille, point jeton, int couleur
 			return true;
 	}
 
-	while (x2 != 0 && y2 != 6) //regarde NW
+	while (x2 != 0 && y2 != 5) //regarde NW
 	{
 		x2--;
 		y2++;
@@ -391,7 +396,7 @@ void dessiner(vector<list<int>> &grille, RenderWindow &window, Sprite map, Circl
 	for (int i = 0; i < 7; i++) {
 		sf::Color couleur;
 		list<int>::iterator it = grille[i].begin();
-			for (int k = 0; k < 7; k++)
+			for (int k = 0; k < 6; k++)
 			{
 				if (*it == 0)
 					couleur = Color::Transparent;
@@ -413,4 +418,19 @@ void dessiner(vector<list<int>> &grille, RenderWindow &window, Sprite map, Circl
 			posX += 175;
 	}
 	window.display();
+}
+
+bool verifieSiNul(vector<list<int>> &grille) 
+{
+	for (int i = 0 ; i < 7; i++)
+	{ 
+		list<int>::iterator it = grille[i].begin();
+		for (int k = 0; k < 6; k++) 
+		{
+			if (*it == 0)
+				return false;
+			it++;
+		}
+	}
+	return true;
 }
