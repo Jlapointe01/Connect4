@@ -149,20 +149,20 @@ int main()
 					textWinner.setString("");
 					if (tour == 1)
 					{
-						textWinner.setString(joueur2 + " gagne");
+						textWinner.setString(joueur2 + " gagne" "Peser sur le X pour fermer");
 						nbwinJoueur2++;
 						nbloseJoueur1++;
 					}
 					else
 					{
-						textWinner.setString(joueur2 + " gagne");
+						textWinner.setString(joueur1 + " gagne" "Peser sur le X pour fermer");
 						nbwinJoueur1++;
 						nbloseJoueur2++;
 
 					}
 					window.clear(sf::Color::White);
-					window.draw(label);
-					window.draw(text);
+					window.draw(textWinner);
+					window.display();
 					//gagner = false;
 				}
 				else
