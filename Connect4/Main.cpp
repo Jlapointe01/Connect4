@@ -6,12 +6,6 @@
 #include "vecteur.hpp"
 #include "BaseDonnees.h"
 
-//Pour liste 0 = vide, 1 = rouge, 2 = jaune
-//Postion coin en bas a gauche : 67 ,940
-//Difference haut et bas : 175 px 
-//Difference gauche et droite : 174 px
-//Début 1ère colonne : 63 px
-//Fin 1ère colonne : 237 px
 struct point {
 	int x;
 	int y;
@@ -102,6 +96,8 @@ int main()
 					inscription = false;
 				}
 				if (event.type == sf::Event::TextEntered)		//va faire entrer les nom des 2 joueurs pour les mettres dans les variables joueurs 1 et joueurs 2
+																//pour notre cas les deux seuls joueurs qu'on peut faire marcher sont jacklar et bobbis puisque 
+																//la fonction créer utilisateur n'a pu être créer à temps
 				{
 					if (event.text.unicode == 13)//touche enter confirme le nom
 					{
