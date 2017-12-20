@@ -3,6 +3,8 @@
 #include <string>
 
 #include <windows.h>
+#include "liste.hpp"
+#include "vecteur.hpp"
 #include <sqlext.h>
 #include <sqltypes.h>
 #include <sql.h>
@@ -23,5 +25,13 @@ public:
 	void updatePointage();
 	int getPointage();
 	int getMeilleurPointage();
+	void modifierPointage(int idjoueur, int win, int lose, int draw);
+	void obtenirPointage(int idjoueur, int &win, int &lose, int &draw);
+	void enregistrerGrille(int idjoueur1, int idjoueur2, vector<list<int>>  &grille);
+	void obtenirGrille(int idjoueur1, int idjoueur2, vector<list<int>> &grille);
+	void creerPartie(string joueur1, string joueur2);
+	void supprimerPartie(string joueur1, string joueur2);
+	string compacterColonne(vector<list<int>> &grille, int indexColonne);
+	void decompacterColonne(vector<list<int>> &grille, int indexColonne, string &contenu);
 
 };

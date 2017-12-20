@@ -1,7 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
-#include <list>   //Changer pour list.hpp
-#include <vector> //changer pour vector.hpp
+#include "liste.hpp"
+#include "vecteur.hpp"
 #include "BaseDonnees.h"
 
 //Pour liste 0 = vide, 1 = rouge, 2 = jaune
@@ -37,18 +37,27 @@ bool rechercheDiagonal_NE_SW(vector<list<int>> &grille, point jeton, int couleur
 bool rechercheDiagonal_NW_SE(vector<list<int>> &grille, point jeton, int couleurJeton);
 void dessiner(vector<list<int>> &grille, RenderWindow &window, Sprite map, CircleShape triangle);
 void changementTour(CircleShape &triangle, int &joueurCourant);
+
 int main()
 {
+	BaseDonnees bd;
+	string joueur1;
+	string joueur2;
 	point posTriangle(150, 60);
 	const int rouge = 1,
 		jaune = 2;
 	int joueurCourant = rouge;
+	int nbwinJoueur1 = 0;
+	int nbloseJoueur1 = 0;
+	int nbwinJoueur2 = 0;
+	int nbloseJoueur2 = 0;
 	RenderWindow window(sf::VideoMode(1278, 1106), "Connect 4");
 	CircleShape triangle(35, 3);
 	Texture map;
 	bool terminer = false;
 	int col = 0;
 	int tour = 0;
+	bool inscription = true;		//attente du jeu pour entrer nom des joueurs
 	bool gagner = false;
 	vector<list<int>> grille(7);
 
@@ -65,15 +74,65 @@ int main()
 	{
 		Event event;
 		Event keyPressed;
-
+		sf::Font font;
+		sf::Text label;
+		sf::Text text;
+		font.loadFromFile("arial.ttf");
+		text.setFont(font);
+		label.setFont(font);
+		text.setString("");
+		label.setString("Joueur 1 : ");
+		text.setFillColor(sf::Color::Black);
+		label.setFillColor(sf::Color::Black);
+		text.setPosition(150, 0);
+		while (inscription == true)
+		{
+			while (window.pollEvent(event))
+			{
+				if (event.type == sf::Event::Closed)
+				{
+					window.close();
+					terminer = true;
+					inscription = false;
+				}
+				if (event.type == sf::Event::TextEntered)
+				{
+					if (event.text.unicode == 13)//touche enter
+					{
+						if (label.getString() == "Joueur 1 : ")
+						{
+							joueur1 = text.getString();
+							label.setString("Joueur 2 : ");
+							text.setString("");
+						}
+						else if (label.getString() == "Joueur 2 : ")
+						{
+							joueur2 = text.getString();
+							label.setString("");
+							text.setString("");
+							inscription = false;
+							break;
+						}
+					}
+					else if(event.text.unicode == 8)//touche backspace
+					{
+						string temp = text.getString();
+						temp = temp.substr(0, temp.length() - 1);
+						text.setString(temp);
+					}
+					else
+					{
+						text.setString(text.getString() + static_cast<char>(event.text.unicode));
+					}
+				}
+				window.clear(sf::Color::White);
+				window.draw(label);
+				window.draw(text);
+				window.display();
+			}
+		}
 		while (terminer == false)
 		{
-
-			if (gagner == true) {
-				initialiser(grille);
-				gagner = false;
-			}
-
 			if (joueurCourant == rouge)
 				triangle.setFillColor(Color::Red);
 			else
@@ -83,65 +142,92 @@ int main()
 			{
 				if (event.type == sf::Event::Closed)
 					window.close();
-				if (event.type == sf::Event::KeyPressed)
-				{
-					switch (event.key.code)
+				if (gagner == true) {
+					sf::Text textWinner;
+					textWinner.setFont(font);
+					textWinner.setFillColor(sf::Color::Black);
+					textWinner.setString("");
+					if (tour == 1)
 					{
-					case Keyboard::Right:
-						if (posTriangle.x == 1200)
+						textWinner.setString(joueur2 + " gagne");
+						nbwinJoueur2++;
+						nbloseJoueur1++;
+					}
+					else
+					{
+						textWinner.setString(joueur2 + " gagne");
+						nbwinJoueur1++;
+						nbloseJoueur2++;
+
+					}
+					window.clear(sf::Color::White);
+					window.draw(label);
+					window.draw(text);
+					//gagner = false;
+				}
+				else
+				{
+					if (event.type == sf::Event::KeyPressed)
+					{
+						switch (event.key.code)
 						{
-							right(triangle, posTriangle);
-							posTriangle.x = 150;
-							col = 0;
+						case Keyboard::Right:
+							if (posTriangle.x == 1200)
+							{
+								right(triangle, posTriangle);
+								posTriangle.x = 150;
+								col = 0;
+							}
+							else
+							{
+								right(triangle, posTriangle);
+								posTriangle.x += 175;
+								col++;
+							}
+							break;
+						case Keyboard::Left:
+							if (posTriangle.x == 150)
+							{
+								left(triangle, posTriangle);
+								posTriangle.x = 1200;
+								col = 6;
+							}
+							else
+							{
+								left(triangle, posTriangle);
+								posTriangle.x -= 175;
+								col--;
+							}
+							break;
+							/*	case Keyboard::Return:
+									gagner = insererJeton(grille, joueurCourant, col);
+
+
+									if (joueurCourant == rouge)
+										joueurCourant = jaune;
+									else
+										joueurCourant = rouge;
+									break;*/
 						}
-						else
-						{
-							right(triangle, posTriangle);
-							posTriangle.x += 175;
-							col++;
-						}
-						break;
-					case Keyboard::Left:
-						if (posTriangle.x == 150)
-						{
-							left(triangle, posTriangle);
-							posTriangle.x = 1200;
-							col = 6;
-						}
-						else
-						{
-							left(triangle, posTriangle);
-							posTriangle.x -= 175;
-							col--;
-						}
-						break;
-				/*	case Keyboard::Return:
+					}
+					if (event.type == sf::Event::MouseMoved)
+					{
+						positionMouse(triangle, event.mouseMove.x, posTriangle.y, col);//puisqu'on veut que le triangle reste en haut
+					}
+					if (event.type == sf::Event::MouseButtonReleased)
+					{
 						gagner = insererJeton(grille, joueurCourant, col);
 
-
-						if (joueurCourant == rouge)
-							joueurCourant = jaune;
-						else
-							joueurCourant = rouge;
-						break;*/
+						changementTour(triangle, joueurCourant);
 					}
-				}
-				if (event.type == sf::Event::MouseMoved)
-				{
-					positionMouse(triangle, event.mouseMove.x, posTriangle.y, col);//puisqu'on veut que le triangle reste en haut
-				}
-				if (event.type == sf::Event::MouseButtonReleased)
-				{
-					gagner = insererJeton(grille, joueurCourant, col);
-
-					changementTour(triangle, joueurCourant);
 				}
 			}
 			window.clear();
-			dessiner(grille, window, _map, triangle);
+			if (gagner == false)
+				dessiner(grille, window, _map, triangle);
 		}
 
-
+	
 
 	}
 	return 0;
@@ -149,12 +235,15 @@ int main()
 
 void initialiser(vector<list<int>> &grille) {
 	//Initialise la grille
+	list<int>::iterator it;
 	for (int i = 0; i < 7; i++)
 		grille[i].clear();
-
+	
 	for (int i = 0; i < 7; i++) {
+		it = grille[i].begin();
 		for (int k = 0; k < 7; k++) {
-			grille[i].push_back(0);
+			it = grille[i].insert(it,0);
+			it++;
 		}
 	}
 }
