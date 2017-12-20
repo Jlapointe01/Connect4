@@ -37,6 +37,7 @@ bool rechercheDiagonal_NE_SW(vector<list<int>> &grille, point jeton, int couleur
 bool rechercheDiagonal_NW_SE(vector<list<int>> &grille, point jeton, int couleurJeton);
 void dessiner(vector<list<int>> &grille, RenderWindow &window, Sprite map, CircleShape triangle);
 void changementTour(CircleShape &triangle, int &joueurCourant);
+bool siVide(list<int>::iterator& it);
 
 int main()
 {
@@ -231,6 +232,12 @@ int main()
 
 	}
 	return 0;
+}
+bool siVide(list<int>::iterator& it)
+{
+	if (*it != 0)
+		return false;
+	return true;
 }
 
 void initialiser(vector<list<int>> &grille) {
