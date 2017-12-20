@@ -37,7 +37,7 @@ bool rechercheDiagonal_NE_SW(vector<list<int>> &grille, point jeton, int couleur
 bool rechercheDiagonal_NW_SE(vector<list<int>> &grille, point jeton, int couleurJeton);
 void dessiner(vector<list<int>> &grille, RenderWindow &window, Sprite map, CircleShape triangle);
 void changementTour(CircleShape &triangle, int &joueurCourant);
-bool siVide(list<int>::iterator& it);
+bool verifieSiNul(vector<list<int>> &grille);
 
 int main()
 {
@@ -320,10 +320,18 @@ void positionMouse(CircleShape &triangle, int &x, int y, int &colonne)
 	}
 	triangle.setPosition(Vector2f(x, y));
 }
-bool siVide(list<int>::iterator& it)
+bool verifieSiNul(vector<list<int>> &grille)
 {
-	if (*it != 0)
-		return false;
+	for (int i = 0; i < 7; i++)
+	{
+		list<int>::iterator it = grille[i].begin();
+		for (int k = 0; k < 6; k++)
+		{
+			if (*it == 0)
+				return false;
+			it++;
+		}
+	}
 	return true;
 }
 bool insererJeton(vector<list<int>> &grille, int couleurJeton, int colonne)
